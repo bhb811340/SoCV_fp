@@ -25,6 +25,9 @@ public:
     /*** launch on capture ***/
     void loc();
 
+    /*** equivalence checking of cut point***/
+    void EC_cutpoint();
+    
     /*** pattern generate ***/
     bool generatePattern(int testFaultIndex);
     void initializeData();
