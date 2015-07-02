@@ -15,6 +15,7 @@ public:
     /*** set ***/
     void setName(string name){ _name = name; };
     void setType(string type);
+    void setLevel(int level) { _level = level; }
     void addInWire(int wireId){ _inWireId.push_back(wireId); };
     void setOutWire(int wireId);
     void resetInWire(){ _inWireId.clear(); };
@@ -26,6 +27,7 @@ public:
     int inWire(unsigned inWireNumeration);
     unsigned numInWire(){ return _inWireId.size(); };
     string type();
+    int level() { return _level; }
 	int typeID(){return _type;};
 
     /*** debug ***/
@@ -38,6 +40,7 @@ private:
 
     // not = 1, buf = 2, and = 3, nand = 4, or = 5, nor = 6, xor = 7, xnor = 8, unknown = 0
     int _type;
+    int _level;
 };
 
 #endif // GATE_H

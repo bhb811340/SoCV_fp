@@ -9,6 +9,8 @@
 #include <queue>
 #include <algorithm>
 #include <cassert>
+#include <bitset>
+
 using namespace std;
 
 Circuit::Circuit()
@@ -464,6 +466,7 @@ bool levelCompare(int gate1, int gate2)
 	//cout << level[gate1] << " " << level[gate2] << endl;
 	return level[gate1] < level[gate2];
 }
+
 bool Circuit::setLevel()
 {
 	// read pi
@@ -513,11 +516,13 @@ bool Circuit::setLevel()
 		{
 			Wire inWire = wire(visitedGate.inWire(i));
 			int preGateID = inWire.preGate();
+            //cout<< preGateID;
 			maxSubLevel = max(maxSubLevel , level[preGateID]);
+            //cout<<'\t'<< maxSubLevel<<endl;
 		}
 
 		level[gateID] = maxSubLevel + 1;
-		
+        gate(gateID).setLevel( maxSubLevel +1 );		
 
 		// push fanout gates to queue
 		Wire outWire = wire(visitedGate.outWire());
@@ -599,7 +604,18 @@ void Circuit::logicSim()
 	return;
 }
 
+void Circuit::dumpCircuit()
+{
+    for( unsigned i = 0; i< numGate(); ++i )
+    {
+        Gate g = gate( i );
+        cout<< g.name() << '\t' ;
+        cout<< g.level() << '\t' ;
+        cout<< bitset<32>( value[i] ) <<'\t';
+        cout<< endl;
+    }
 
+}
 
 
 void Circuit::addWire(unsigned wireId, string wireName, string wireType){

@@ -9,17 +9,6 @@
 
 using namespace std;
 
-void Atpg::dumpCircuit()
-{
-    for( unsigned i = 0; i< _circuit.numGate() ; ++i )
-    {
-        Gate tGate = _circuit.gate( i );
-        cout << tGate.name() <<endl;
-
-    }
-    
-}
-
 Atpg::Atpg()
 {
 

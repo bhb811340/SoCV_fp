@@ -59,9 +59,9 @@ string Gate::type(){
 }
 
 void Gate::print(){
-    cout<<_name<<" "<<type()<<"\n";
+    cout<<_name<<"\ttype:"<<type()<<"\tlevel"<<level()<<endl;
     for(unsigned i = 0 ; i < _inWireId.size() ; ++i){
-        cout<<_inWireId[i]<<" ";
+        cout<<'\t'<<_inWireId[i]<<" ";
     }
     cout<<" -> "<<_outWireId<<"\n";
 }
