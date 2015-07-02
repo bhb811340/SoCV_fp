@@ -409,6 +409,37 @@ void Atpg::constructCktSat(){
             sat().addClause(clause);
             clause.resetVariable();
         }
+        else if(gateType == "xor"){
+            //XOR (i1'+i2'+i3'+...io')(i1'+i2+i3+...+io)(i1+i2'+...+io)(i1+i2+...+io')
+            //(i1'+i2+i3+...+io)(i1+i2'+...+io)
+            for(unsigned j = 0; j < circuit().gate(i).numInWire(); ++j){
+                clause.addVariable((-1)*sat().wireIdToVariableId(circuit().gate(i).inWire(j)));
+                for(unsigned k = 0; k < circuit().gate(i).numInWire(); ++k){
+                    if(k != j){
+                        clause.addVariable(sat().wireIdToVariableId(circuit().gate(i).inWire(j)));
+                    }
+                }
+                clause.addVariable(sat().wireIdToVariableId(circuit().gate(i).outWire()));
+                sat().addClause(clause);
+                clause.resetVariable();
+            }
+            //(i1+i2+...+io')
+            for(unsigned j = 0 ; j < circuit().gate(i).numInWire() ; ++j){
+                clause.addVariable(sat().wireIdToVariableId(circuit().gate(i).inWire(j)));
+            }
+            clause.addVariable((-1)*sat().wireIdToVariableId(circuit().gate(i).outWire()));
+            sat().addClause(clause);
+            clause.resetVariable();
+            //(i1'+i2'+i3'+...io')
+            for(unsigned j = 0 ; j < circuit().gate(i).numInWire() ; ++j){
+                clause.addVariable((-1)*sat().wireIdToVariableId(circuit().gate(i).inWire(j)));
+            }
+            clause.addVariable((-1)*sat().wireIdToVariableId(circuit().gate(i).outWire()));
+            sat().addClause(clause);
+            clause.resetVariable();
+
+        }
+
     }
 
     // PI should be the same in the two time frames
