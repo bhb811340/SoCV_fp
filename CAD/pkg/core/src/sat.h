@@ -17,6 +17,7 @@ public:
     unsigned numClause(){ return _cnf.size(); };
     unsigned numVariable(){ return _variable.size(); };
     int wireIdToVariableId(int wireId);
+    int gateIdToVariableId(int gateId);
     bool variableValue(unsigned variableId);
 
     /*** set ***/
@@ -41,6 +42,7 @@ private:
     vector<Clause> _cnf;
     vector<int> _variable; // notice that _variable[0] is redundant
     map<int, int> _wireVarMap;
+    map<int, int> _gateVarMap;
     vector<bool> _variableValue;
 
 

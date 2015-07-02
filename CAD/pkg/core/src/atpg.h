@@ -19,7 +19,7 @@ public:
 
     /*** get object ***/
     Spec& spec(){ return _spec; };
-    Circuit& circuit(){ return _circuit; };
+    Circuit& circuit(int i){ return _circuit[i]; };
     Sat& sat(){ return _sat; };
 
     /*** launch on capture ***/
@@ -48,7 +48,7 @@ public:
 
 private:
     Spec _spec;
-    Circuit _circuit;
+    Circuit _circuit[2];
     Sat _sat;
 
     /*** launch on capture ***/

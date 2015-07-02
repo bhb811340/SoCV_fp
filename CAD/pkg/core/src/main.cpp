@@ -9,31 +9,32 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    if(argc != 2){
-        cout<<"usage: CAD_EC  <circuit.v>\n";
+    if(argc != 3){
+        cout<<"usage: CAD_EC <designA.v> <designB.v> \n";
         return 0;
     }
 
     Atpg atpg;
     //atpg.spec().readSpec(argv[1]);
     //atpg.spec().print();
-    atpg.circuit().readVerilog(argv[1]);  
+    atpg.circuit(0).readVerilog(argv[1]); 
+    atpg.circuit(1).readVerilog(argv[2]); 
     //atpg.circuit().print();
 
     //atpg.loc();
 
-	atpg.circuit().setLevel();
+	atpg.circuit(0).setLevel();
 
     //atpg.circuit().printDuplicated();
 	//
 
-    Pattern* patternSet = atpg.circuit().RandomGenPattern();
+    Pattern* patternSet = atpg.circuit(0).RandomGenPattern();
     //for( int i =0; i< patternSet->value.size(); ++i )
     //    cout<<patternSet->value[i] <<endl;
 
-	atpg.circuit().logicSim( patternSet );
+	atpg.circuit(0).logicSim( patternSet );
 
-    atpg.circuit().dumpCircuit();
+    atpg.circuit(0).dumpCircuit();
 
     //string cmd = "rm *.cnf *.result *.tmp";
     //system(cmd.c_str());
