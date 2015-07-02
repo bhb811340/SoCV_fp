@@ -26,6 +26,7 @@ public:
     int inWire(unsigned inWireNumeration);
     unsigned numInWire(){ return _inWireId.size(); };
     string type();
+	int typeID(){return _type;};
 
     /*** debug ***/
     void print();
@@ -36,7 +37,7 @@ private:
     int _outWireId;
 
     // not = 1, buf = 2, and = 3, nand = 4, or = 5, nor = 6, xor = 7, xnor = 8, unknown = 0
-    int _type; // not = 1, and = 2, nand = 3, or = 4, nor = 5, dff = 6, unknown = 0
+    int _type;
 };
 
 #endif // GATE_H
