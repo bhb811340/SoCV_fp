@@ -46,9 +46,6 @@ public:
     void printPath();
     void printWirePossibility();
 
-    void dumpCircuit();
-
-
 private:
     Spec _spec;
     Circuit _circuit;

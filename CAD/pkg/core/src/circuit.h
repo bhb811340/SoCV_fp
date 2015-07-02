@@ -51,7 +51,7 @@ public:
     /*** debug ***/
     void print();
     void printDuplicated();
-
+    void dumpCircuit();
 
 private:
     string _name;

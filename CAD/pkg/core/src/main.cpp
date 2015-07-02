@@ -21,16 +21,16 @@ int main(int argc, char *argv[])
 
     //atpg.loc();
 
-    atpg.dumpCircuit();
 	atpg.circuit().setLevel();
 
     //atpg.circuit().printDuplicated();
 	//
 	atpg.circuit().logicSim();
 
+    atpg.circuit().dumpCircuit();
 
-    string cmd = "rm *.cnf *.result *.tmp";
-    system(cmd.c_str());
+    //string cmd = "rm *.cnf *.result *.tmp";
+    //system(cmd.c_str());
 
     return 0;
 }
