@@ -290,9 +290,6 @@ bool Atpg::propagate(unsigned wireId){
         if(_pathFlag)
             i = circuit().wire(wireId).numPosGate();
     }*/
-
-
-
 }
 
 void Atpg::printPath(){

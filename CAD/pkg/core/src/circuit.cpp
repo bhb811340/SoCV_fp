@@ -38,12 +38,12 @@ bool Circuit::readVerilog(string fileName){
         if(tmp.find_first_not_of(' ') != string::npos){
             tmp = tmp.substr(tmp.find_first_not_of(' '), tmp.length());
             if(tmp[0] != '/' && tmp[1] != '/'){
-                cout<<tmp<<endl;
+                //cout<<tmp<<endl;
                 sliced = sliceVerilog(&tmp);
-                cout<<"slice = " << sliced <<endl;
-                cout<<"slice = " << sliced.compare("") <<endl;
+                //cout<<"slice = " << sliced <<endl;
+                //cout<<"slice = " << sliced.compare("") <<endl;
                 while(sliced.compare("") && token != "END"){
-                    cout<<"abcdkd = "<<sliced<<" "<<token<<endl;
+                    //cout<<"abcdkd = "<<sliced<<" "<<token<<endl;
                     //cout<<sliced<<endl;
 
                     if(!token.compare("CKTNAME")){
