@@ -34,6 +34,10 @@ void Atpg::loc(){
 
 }
 
+void Atpg::EC_cutpoint(){
+
+}
+
 void Atpg::initializeData(){
     // called before generating pattern of a fault
     initialzeWireValue();
