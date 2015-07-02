@@ -18,6 +18,12 @@ public:
     /*** construct ***/
     bool readVerilog(string fileName);
 
+    /*** HCY add for logic simulation ***/
+	bool setLevel();
+	void logicSim();
+	vector<int> value;
+	vector<bool> fixedValue;
+
     /*** set ***/
     void setName(string cktName){ _name = cktName; };
     void addWire(unsigned wireId, string wireName, string wireType);
@@ -64,6 +70,10 @@ private:
     void connectWire();
     void checkWire();
     void checkGate();
+
+    /*** HCY add for logic sim ***/
+	vector<int> topologicalSequence;
+
 };
 
 #endif // CIRCUIT_H
