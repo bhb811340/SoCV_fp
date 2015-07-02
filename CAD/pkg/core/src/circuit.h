@@ -6,6 +6,7 @@
 
 #include "gate.h"
 #include "wire.h"
+#include "pattern.h"
 
 using namespace std;
 
@@ -20,7 +21,8 @@ public:
 
     /*** HCY add for logic simulation ***/
 	bool setLevel();
-	void logicSim();
+    Pattern*    RandomGenPattern();
+	void        logicSim( Pattern* PatternSet );
 	vector<int> value;
 	vector<bool> fixedValue;
 
@@ -71,7 +73,8 @@ private:
     void checkWire();
     void checkGate();
 
-    /*** HCY add for logic sim ***/
+    /*** logic sim ***/
+    void        AssignPiValue( Pattern* patternSet );
 	vector<int> topologicalSequence;
 
 };

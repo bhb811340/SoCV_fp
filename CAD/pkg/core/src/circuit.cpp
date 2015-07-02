@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cassert>
 #include <bitset>
+#include <time.h>
 
 using namespace std;
 
@@ -548,8 +549,41 @@ bool Circuit::setLevel()
 	return true;
 }
 
-void Circuit::logicSim()
+Pattern* Circuit::RandomGenPattern()
 {
+    //vector<Pattern*> patternSet;
+    //patternSet.resize( 32 );
+    
+    Pattern* pattern = new Pattern();
+
+    srand( time(NULL) );
+    for( unsigned i=0 ; i < numWire(); ++i )
+    {
+       Wire pWire = wire(i);
+       if( pWire.type() == "PI" )
+           pattern->value.push_back( rand() ); 
+    }
+
+    return pattern;
+}
+
+void Circuit::AssignPiValue( Pattern* PatternSet )
+{
+    
+    for( unsigned i = 0, j = 0 ; i < numWire(); ++i )
+    {
+       Wire pWire = wire(i);
+       if( pWire.type() == "PI" )
+       {
+            value[ i ] = PatternSet->value[j];
+            ++j;
+       }
+    }
+}
+
+void Circuit::logicSim( Pattern* PatternSet )
+{
+    AssignPiValue( PatternSet );
 
 	for(unsigned i = 0 ; i < topologicalSequence.size() ; ++i)
 	{
@@ -558,7 +592,6 @@ void Circuit::logicSim()
 		int gateID = topologicalSequence[i];
 		Gate targetGate = gate(gateID);
 		// not = 1, buf = 2, and = 3, nand = 4, or = 5, nor = 6, xor = 7, xnor = 8, unknown = 0
-		//
 		
 		int finalValue = value[targetGate.inWire(0)];
 		for(unsigned j = 1 ; j < targetGate.numInWire() ; ++j)
@@ -566,6 +599,7 @@ void Circuit::logicSim()
 			int inWireID = targetGate.inWire(j);
 			assert(level[wire(inWireID).preGate()] <= level[gateID]);
 			int inValue = value[inWireID];
+
 			switch(targetGate.typeID())
 			{
 				case 1:
@@ -595,11 +629,14 @@ void Circuit::logicSim()
 			case 4:
 			case 6:
 			case 8:
-				finalValue = ! finalValue;
+				finalValue = ~ finalValue;
 				break;
 			default:
 				break;
 		}
+
+        ///cout<< finalValue<<endl;
+        value[ targetGate.outWire() ] = finalValue;
 	}
 	return;
 }
@@ -610,11 +647,18 @@ void Circuit::dumpCircuit()
     {
         Gate g = gate( i );
         cout<< g.name() << '\t' ;
-        cout<< g.level() << '\t' ;
-        cout<< bitset<32>( value[i] ) <<'\t';
+        cout<< "level" << g.level() << '\t' ;
+        //cout<< bitset<32>( value[i] ) <<'\t';
         cout<< endl;
     }
 
+    for( unsigned j = 0; j< numWire(); ++j )
+    {
+        Wire w = wire( j );
+        cout<< w.name() << '\t';
+        cout<< "value=" << bitset<32>( value[j] )<<'\t';
+        cout<<endl;
+    }
 }
 
 

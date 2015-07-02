@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "atpg.h"
+#include "pattern.h"
 
 using namespace std;
 
@@ -25,7 +26,12 @@ int main(int argc, char *argv[])
 
     //atpg.circuit().printDuplicated();
 	//
-	atpg.circuit().logicSim();
+
+    Pattern* patternSet = atpg.circuit().RandomGenPattern();
+    //for( int i =0; i< patternSet->value.size(); ++i )
+    //    cout<<patternSet->value[i] <<endl;
+
+	atpg.circuit().logicSim( patternSet );
 
     atpg.circuit().dumpCircuit();
 
