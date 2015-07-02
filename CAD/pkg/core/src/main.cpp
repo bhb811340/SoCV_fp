@@ -26,13 +26,7 @@ int main(int argc, char *argv[])
 	atpg.circuit(0).setLevel();
     atpg.circuit(1).setLevel();
 
-    //atpg.circuit().printDuplicated();
-	//
-
-    Pattern* patternSet = atpg.circuit(0).RandomGenPattern();
-    //for( int i =0; i< patternSet->value.size(); ++i )
-    //    cout<<patternSet->value[i] <<endl;
-
+    Pattern* patternSet = atpg.RandomGenPattern();
 	atpg.circuit(0).logicSim( patternSet );
     atpg.circuit(1).logicSim( patternSet );
 

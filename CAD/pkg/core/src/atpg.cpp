@@ -27,6 +27,24 @@ void Atpg::loc(){
     //initialWriteOutput();
 }
 
+Pattern* Atpg::RandomGenPattern()
+{
+    Pattern* pattern = new Pattern();
+
+    srand( time(NULL) );
+    for( unsigned i=0 ; i < circuit(0).numWire(); ++i )
+    {
+        Wire pWire = circuit(0).wire(i);
+        if( pWire.type() == "PI" )
+            pattern->value.push_back( rand() );
+    }
+    _pattern.push_back( pattern );
+
+
+    return pattern;
+}
+
+
 void Atpg::EC_cutpoint(){
 
 }

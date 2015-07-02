@@ -549,11 +549,9 @@ bool Circuit::setLevel()
 	return true;
 }
 
+/*
 Pattern* Circuit::RandomGenPattern()
 {
-    //vector<Pattern*> patternSet;
-    //patternSet.resize( 32 );
-    
     Pattern* pattern = new Pattern();
 
     srand( time(NULL) );
@@ -565,7 +563,7 @@ Pattern* Circuit::RandomGenPattern()
     }
 
     return pattern;
-}
+}*/
 
 void Circuit::AssignPiValue( Pattern* PatternSet )
 {

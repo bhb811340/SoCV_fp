@@ -14,6 +14,9 @@ public:
     Atpg();
     ~Atpg();
 
+    /*** Gene Pattern ***/
+    Pattern*    RandomGenPattern();
+
     /*** get ***/
     unsigned duplicateIndex(){ return _duplicateIndex; };
 
@@ -50,6 +53,9 @@ private:
     Spec _spec;
     Circuit _circuit[2];
     Sat _sat;
+    
+    /*** pattern ***/
+    vector<Pattern*> _pattern;
 
     /*** launch on capture ***/
     unsigned _duplicateIndex;

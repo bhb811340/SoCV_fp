@@ -21,7 +21,7 @@ public:
 
     /*** HCY add for logic simulation ***/
 	bool setLevel();
-    Pattern*    RandomGenPattern();
+    //Pattern*    RandomGenPattern();
 	void        logicSim( Pattern* PatternSet );
 	vector<int> value;
 	vector<bool> fixedValue;
