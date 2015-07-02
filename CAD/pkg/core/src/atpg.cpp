@@ -69,7 +69,7 @@ void Atpg::PossibleEqualSet()
 
         if( it == PES.end() )
             PES.insert( it, pair<int, vector<int> >( value, vector<int>() ) );
-        PES[ value ].push_back( i );
+        PES[ value ].push_back( i + circuit(0).numWire() );
     }
 
     map< int, vector<int> >::iterator it;

@@ -596,7 +596,7 @@ void Circuit::logicSim( Pattern* PatternSet )
 		for(unsigned j = 1 ; j < targetGate.numInWire() ; ++j)
 		{
 			int inWireID = targetGate.inWire(j);
-			assert(level[wire(inWireID).preGate()] <= level[gateID]);
+			//assert(level[wire(inWireID).preGate()] <= level[gateID]);
 			int inValue = value[inWireID];
 
 			switch(targetGate.typeID())

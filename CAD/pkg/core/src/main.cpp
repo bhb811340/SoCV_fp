@@ -17,8 +17,11 @@ int main(int argc, char *argv[])
     Atpg atpg;
     //atpg.spec().readSpec(argv[1]);
     //atpg.spec().print();
-    atpg.circuit(0).readVerilog(argv[1]); 
+    cout<<"Start parsing circuits... "<<endl;
+    atpg.circuit(0).readVerilog(argv[1]);
+    cout<<"Circuit "<<argv[1]<<"\tOK !!!"<<endl; 
     atpg.circuit(1).readVerilog(argv[2]); 
+    cout<<"Circuit "<<argv[2]<<"\tOK !!!"<<endl; 
     //atpg.circuit().print();
 
     //atpg.loc();
@@ -32,8 +35,8 @@ int main(int argc, char *argv[])
 
     atpg.PossibleEqualSet();
 
-    atpg.circuit(0).dumpCircuit();
-    atpg.circuit(1).dumpCircuit();
+    //atpg.circuit(0).dumpCircuit();
+    //atpg.circuit(1).dumpCircuit();
 
     //string cmd = "rm *.cnf *.result *.tmp";
     //system(cmd.c_str());
