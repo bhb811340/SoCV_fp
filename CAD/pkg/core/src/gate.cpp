@@ -3,8 +3,9 @@
 #include <string>
 
 Gate::Gate()
-    : _type(0),
+    : 
       _outWireId(-1)
+	  ,_type(0)
 {
 }
 

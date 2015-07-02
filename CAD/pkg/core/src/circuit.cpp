@@ -6,7 +6,9 @@
 #include <fstream>
 #include <sstream>
 #include <map>
-
+#include <queue>
+#include <algorithm>
+#include <cassert>
 using namespace std;
 
 Circuit::Circuit()
@@ -38,12 +40,12 @@ bool Circuit::readVerilog(string fileName){
         if(tmp.find_first_not_of(' ') != string::npos){
             tmp = tmp.substr(tmp.find_first_not_of(' '), tmp.length());
             if(tmp[0] != '/' && tmp[1] != '/'){
-                cout<<tmp<<endl;
+                //cout<<tmp<<endl;
                 sliced = sliceVerilog(&tmp);
-                cout<<"slice = " << sliced <<endl;
-                cout<<"slice = " << sliced.compare("") <<endl;
+                //cout<<"slice = " << sliced <<endl;
+                //cout<<"slice = " << sliced.compare("") <<endl;
                 while(sliced.compare("") && token != "END"){
-                    cout<<"abcdkd = "<<sliced<<" "<<token<<endl;
+                    //cout<<"abcdkd = "<<sliced<<" "<<token<<endl;
                     //cout<<sliced<<endl;
 
                     if(!token.compare("CKTNAME")){
@@ -454,6 +456,151 @@ void Circuit::checkWire(){
 
 
 }
+
+vector<int> level;
+bool levelCompare(int gate1, int gate2)
+{
+	//cout << gate1 << " " << gate2 << " " << level.size() <<  endl;
+	//cout << level[gate1] << " " << level[gate2] << endl;
+	return level[gate1] < level[gate2];
+}
+bool Circuit::setLevel()
+{
+	// read pi
+	vector<int> pi;
+	for(unsigned i = 0 ; i < numWire() ; ++i)
+	{
+		Wire piWire = wire(i);
+		if(piWire.type() == "PI")
+			pi.push_back(i);
+	}
+	
+	// all gate not visit yet
+	queue<int> gates;
+	vector<int> visitCount(numGate() , 0);
+
+	for(unsigned i = 0 ; i < pi.size() ; ++i)
+	{
+		Wire piWire = wire(pi[i]);
+
+		// push fanout gates to queue
+		for(unsigned j = 0 ; j < piWire.numPosGate() ; ++j)
+		{
+			int posGateID = piWire.posGate(j);
+			gates.push(posGateID);
+		}
+	}
+	
+	// set level of gates
+	level.assign(numGate() , -1);
+
+	// visit all gates
+	while(!gates.empty())
+	{
+		int gateID = gates.front();
+		gates.pop();
+
+		Gate visitedGate = gate(gateID);
+
+		visitCount[gateID]++;
+
+		if(visitCount[gateID] != (int)visitedGate.numInWire())
+			continue;
+
+		// calculate level
+		int maxSubLevel = 0;
+		for(unsigned i = 0 ; i < visitedGate.numInWire() ; ++i)
+		{
+			Wire inWire = wire(visitedGate.inWire(i));
+			int preGateID = inWire.preGate();
+			maxSubLevel = max(maxSubLevel , level[preGateID]);
+		}
+
+		level[gateID] = maxSubLevel + 1;
+		
+
+		// push fanout gates to queue
+		Wire outWire = wire(visitedGate.outWire());
+		for(unsigned j = 0 ; j < outWire.numPosGate() ; ++j)
+		{
+			int posGateID = outWire.posGate(j);
+			gates.push(posGateID);
+		}
+	}
+	
+	// sequence
+	for(unsigned i = 0 ; i < numGate() ; ++i)
+		topologicalSequence.push_back(i);
+
+		
+	sort(topologicalSequence.begin() , topologicalSequence.end() , levelCompare);
+
+	if(value.size() == 0)
+		value.assign(numWire() , 0);
+	if(fixedValue.size() == 0)
+		fixedValue.assign(numWire() , 0);
+
+	return true;
+}
+
+void Circuit::logicSim()
+{
+
+	for(unsigned i = 0 ; i < topologicalSequence.size() ; ++i)
+	{
+		if(fixedValue[i])
+			continue;
+		int gateID = topologicalSequence[i];
+		Gate targetGate = gate(gateID);
+		// not = 1, buf = 2, and = 3, nand = 4, or = 5, nor = 6, xor = 7, xnor = 8, unknown = 0
+		//
+		
+		int finalValue = value[targetGate.inWire(0)];
+		for(unsigned j = 1 ; j < targetGate.numInWire() ; ++j)
+		{
+			int inWireID = targetGate.inWire(j);
+			assert(level[wire(inWireID).preGate()] <= level[gateID]);
+			int inValue = value[inWireID];
+			switch(targetGate.typeID())
+			{
+				case 1:
+				case 2:
+					finalValue = inValue;
+					break;
+				case 3:
+				case 4:
+					finalValue = finalValue & inValue;
+					break;
+				case 5:
+				case 6:
+					finalValue = finalValue | inValue;
+					break;
+				case 7:
+				case 8:
+					finalValue = finalValue ^ inValue;
+					break;
+				default:
+					cout << "strange gate type id: " << targetGate.typeID() << endl;
+					exit(0);
+			}
+		}
+		switch(targetGate.typeID())
+		{
+			case 1:
+			case 4:
+			case 6:
+			case 8:
+				finalValue = ! finalValue;
+				break;
+			default:
+				break;
+		}
+	}
+	return;
+}
+
+
+
 
 void Circuit::addWire(unsigned wireId, string wireName, string wireType){
     if(_wire[wireId].type() != "UNUSED"){

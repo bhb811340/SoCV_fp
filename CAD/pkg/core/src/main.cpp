@@ -22,8 +22,11 @@ int main(int argc, char *argv[])
     //atpg.loc();
 
     atpg.dumpCircuit();
+	atpg.circuit().setLevel();
 
     //atpg.circuit().printDuplicated();
+	//
+	atpg.circuit().logicSim();
 
 
     string cmd = "rm *.cnf *.result *.tmp";
