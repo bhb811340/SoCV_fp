@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
     //atpg.loc();
 
 	atpg.circuit(0).setLevel();
+    atpg.circuit(1).setLevel();
 
     //atpg.circuit().printDuplicated();
 	//
@@ -33,8 +34,10 @@ int main(int argc, char *argv[])
     //    cout<<patternSet->value[i] <<endl;
 
 	atpg.circuit(0).logicSim( patternSet );
+    atpg.circuit(1).logicSim( patternSet );
 
     atpg.circuit(0).dumpCircuit();
+    atpg.circuit(1).dumpCircuit();
 
     //string cmd = "rm *.cnf *.result *.tmp";
     //system(cmd.c_str());
