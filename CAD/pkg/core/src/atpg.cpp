@@ -6,6 +6,8 @@
 #include <time.h>
 #include <iostream>
 #include <fstream>
+#include <math.h>
+#include <bitset>
 
 using namespace std;
 
@@ -44,6 +46,42 @@ Pattern* Atpg::RandomGenPattern()
     return pattern;
 }
 
+void Atpg::PossibleEqualSet()
+{
+    for( unsigned i = 0; i < circuit(0).numWire(); ++i )
+    {
+        Wire w = circuit(0).wire(i);
+        int value = w.valueSet();
+        map< int, vector<int> >::iterator it;
+        it = PES.find( value );
+
+        if( it == PES.end() )
+            PES.insert( it, pair<int, vector<int> >( value, vector<int>() ) );
+        PES[ value ].push_back( i );
+    }
+
+    for( unsigned i = 0; i < circuit(1).numWire(); ++i )
+    {
+        Wire w = circuit(1).wire(i);
+        int value = w.valueSet();
+        map< int, vector<int> >::iterator it;
+        it = PES.find( value );
+
+        if( it == PES.end() )
+            PES.insert( it, pair<int, vector<int> >( value, vector<int>() ) );
+        PES[ value ].push_back( i );
+    }
+
+    map< int, vector<int> >::iterator it;
+    for( it = PES.begin(); it != PES.end(); it++ )
+    {
+        //cout<<"IN"<<endl;
+        cout<<"Value:"<< bitset<32>( it->first )<<'\t';
+        for( unsigned j = 0; j < it->second.size(); ++j )
+            cout<< it->second[j] <<' ';
+        cout<<endl;
+    }
+}
 
 void Atpg::EC_cutpoint(){
 

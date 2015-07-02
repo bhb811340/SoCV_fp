@@ -574,6 +574,7 @@ void Circuit::AssignPiValue( Pattern* PatternSet )
        if( pWire.type() == "PI" )
        {
             value[ i ] = PatternSet->value[j];
+            wire(i).setValueSet( PatternSet->value[j] );
             ++j;
        }
     }
@@ -635,6 +636,7 @@ void Circuit::logicSim( Pattern* PatternSet )
 
         ///cout<< finalValue<<endl;
         value[ targetGate.outWire() ] = finalValue;
+        wire( targetGate.outWire() ).setValueSet( finalValue );
 	}
 	return;
 }
@@ -654,7 +656,7 @@ void Circuit::dumpCircuit()
     {
         Wire w = wire( j );
         cout<< w.name() << '\t';
-        cout<< "value=" << bitset<32>( value[j] )<<'\t';
+        cout<< "value=" << bitset<32>( w.valueSet() )<<'\t';
         cout<<endl;
     }
 }

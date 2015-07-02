@@ -30,6 +30,8 @@ int main(int argc, char *argv[])
 	atpg.circuit(0).logicSim( patternSet );
     atpg.circuit(1).logicSim( patternSet );
 
+    atpg.PossibleEqualSet();
+
     atpg.circuit(0).dumpCircuit();
     atpg.circuit(1).dumpCircuit();
 
