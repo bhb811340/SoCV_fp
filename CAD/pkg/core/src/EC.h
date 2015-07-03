@@ -12,7 +12,7 @@ class EC
 public:
     EC() {
 	  _circuit = new Circuit[2];
-	  _sat = new Sat[2];
+	  _sat = new Sat;
 	  _GateId = new int[2];
 	  _dfsorder = new vector<int>[2];
 	};
@@ -25,7 +25,7 @@ public:
 
 	/***get***/
 	Circuit& getCircuit(int i) {return _circuit[i];};
-	Sat& getSat(int i) {return _sat[i];};
+	Sat& getSat() {return *_sat;};
 	int getId(int i) {return _GateId[i];};
 
 	/***sat***/
