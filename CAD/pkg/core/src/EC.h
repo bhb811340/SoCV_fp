@@ -23,7 +23,7 @@ public:
 	  delete [] _dfsorder;
 	};
     /***set***/
-    void setCircuit(Atpg atpg, int i) {_circuit[i] = atpg.circuit(i);} //get circuit from atpg
+    void setCircuit(int i, Circuit ckt) {_circuit[i] = ckt;} //get circuit from atpg
     void getPES(vector<int> PES) {_PES = PES;} //get possible equivalence set from atpg.PES
     void cutpointAssign(int i, int j){_GateId[i] = j;}
     /***get***/
