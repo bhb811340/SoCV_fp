@@ -5,6 +5,7 @@
 #include "atpg.h"
 #include "pattern.h"
 #include "EC.h"
+#include "cut.h"
 
 using namespace std;
 
@@ -40,19 +41,28 @@ int main(int argc, char *argv[])
 
     //Equivalence checking
     //check each equivalence set
+	Cut c;
     map< int, vector<int> >::iterator it;
     for( it = atpg.PES.begin(); it != atpg.PES.end(); it++ )
     {
+		vector<int> ckt1;
+		vector<int> ckt2;
         cout << "Equivalence set "<< it->first <<" checking"<<endl;
-        for (unsigned i = 0; i < it->second.size(); ++i){   
-            for (unsigned j = 0; j < it->second.size(); ++j){
+		for (unsigned i = 0; i < it->second.size(); ++i) {
+			if(it->second[i] < offset)
+				ckt1.push_back(it->second[i]);
+			else
+				ckt2.push_back(it->second[i] - offset);
+		}
+        for (unsigned i = 0; i < ckt1.size(); ++i){   
+            for (unsigned j = 0; j < ckt2.size(); ++j){
                 EC ec;
               
                 ec.setCircuit(atpg, 0);
                 ec.setCircuit(atpg, 1);
                 
-                ec.cutpointAssign(0, i);
-                ec.cutpointAssign(1, j);
+                ec.cutpointAssign(0, ckt1[i]);
+                ec.cutpointAssign(1, ckt2[j]);
                 
 
                 ec.dfsorder(ec.getCircuit(0), ec.getId(0),ec.getDfsorder(0));
@@ -61,11 +71,14 @@ int main(int argc, char *argv[])
                 ec.getGateSat(ec.getCircuit(0), ec.getSat(),ec.getDfsorder(0) , 0);
                 ec.getGateSat(ec.getCircuit(1), ec.getSat(),ec.getDfsorder(1) , offset);
 
-                ec.solveSat(ec.miter(ec.getSat(),ec.getDfsorderPointer(),offset));
-                
-                //ec.getPES(it->second); 
+                bool satResult = ec.solveSat(ec.miter(ec.getSat(),ec.getDfsorderPointer(),offset));
+                if(satResult == false) {
+					c.pushCut(ckt1[i]);
+					c.pushCounter(ckt2[j]);
+				}
             }
         }
+
         //cout<<"Value: "<< bitset<32>( it->first )<<" / "<< bitset<32>( ~it->first )<<'\t';
         //for( unsigned j = 0; j < it->second.size(); ++j )
          //   cout<< it->second[j] <<' ';
