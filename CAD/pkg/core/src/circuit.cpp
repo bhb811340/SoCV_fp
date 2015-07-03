@@ -11,6 +11,7 @@
 #include <cassert>
 #include <bitset>
 #include <time.h>
+#include <iomanip>
 
 using namespace std;
 
@@ -51,7 +52,7 @@ bool Circuit::readVerilog(string fileName){
     string sliced;  //This is for gate type
     string token = "WAIT";
     bool out_flag = false;
-    bool name_flag = false;
+    //bool name_flag = false;
     while(getline(inVeriFile, tmp) && token != "END"){
         if(tmp.find_first_not_of(' ') != string::npos){
             tmp = tmp.substr(tmp.find_first_not_of(' '), tmp.length());
@@ -534,8 +535,8 @@ bool Circuit::setLevel()
 
 	if(value.size() == 0)
 		value.assign(numWire() , 0);
-	if(cutPoint.size() == 0)
-		cutPoint.assign(numWire() , 0);
+	//if(cutPoint.size() == 0)
+	//	cutPoint.assign(numWire() , 0);
 
 	return true;
 }
@@ -558,16 +559,31 @@ Pattern* Circuit::RandomGenPattern()
 
 void Circuit::AssignPiValue( Pattern* PatternSet )
 {
-    
     for( unsigned i = 0, j = 0 ; i < numWire(); ++i )
     {
-       Wire pWire = wire(i);
-       if( pWire.type() == "PI" )
-       {
+        Wire pWire = wire(i);
+        if( pWire.type() == "PI" )
+        {
             value[ i ] = PatternSet->value[j];
             wire(i).setValueSet( PatternSet->value[j] );
             ++j;
-       }
+        }
+        else if ( pWire.type() == "TIE0" ) // assign value to TIE0
+        {
+            value[ i ] = 0;
+            wire(i).setValueSet( 0 );
+        }
+        else if ( pWire.type() == "TIE1" ) // assign value to TIE1
+        {
+            value[ i ] = ~0;
+            wire(i).setValueSet( ~0 );
+        }
+        else if ( pWire.isCutPoint() ) // assign value to cut points
+        {
+            value[ i ] = PatternSet->value[j];
+            wire(i).setValueSet( PatternSet->value[j] );
+            ++j;
+        }
     }
 }
 
@@ -577,12 +593,10 @@ void Circuit::logicSim( Pattern* PatternSet )
 
 	for(unsigned i = 0 ; i < topologicalSequence.size() ; ++i)
 	{
-		if( cutPoint[i])
-			continue;
 		int gateID = topologicalSequence[i];
 		Gate targetGate = gate(gateID);
-		// not = 1, buf = 2, and = 3, nand = 4, or = 5, nor = 6, xor = 7, xnor = 8, unknown = 0
-		
+	    // PI = 1, PO = 2, CUT = 3, CUT_BAR = 4, TIE0 = 5, TIE1 = 6, NORMAL = 7, REMOVED = 8, UNUSED = 0
+    	
 		int finalValue = value[targetGate.inWire(0)];
 		for(unsigned j = 1 ; j < targetGate.numInWire() ; ++j)
 		{
@@ -626,8 +640,14 @@ void Circuit::logicSim( Pattern* PatternSet )
 		}
 
         ///cout<< finalValue<<endl;
-        value[ targetGate.outWire() ] = finalValue;
-        wire( targetGate.outWire() ).setValueSet( finalValue );
+
+        Wire fanoutWire = wire( targetGate.outWire() );
+		if( ! fanoutWire.isCutPoint()  )
+        {
+            wire( targetGate.outWire() ).setValueSet( finalValue );
+            value[ targetGate.outWire() ] = finalValue;
+        }
+
 	}
 	return;
 }
@@ -646,8 +666,12 @@ void Circuit::dumpCircuit()
     for( unsigned j = 0; j< numWire(); ++j )
     {
         Wire w = wire( j );
+        cout<< j << '\t';
         cout<< w.name() << '\t';
-        cout<< "value=" << bitset<32>( w.valueSet() )<<'\t';
+        cout<< "type:" << setiosflags(ios::left) << setw(8) << w.type() <<'\t';
+        if( w.type() != "UNUSED" )
+            cout<< "value=" << bitset<32>( w.valueSet() )<<'\t';
+        cout<< w.isCutPoint() <<'\t';
         cout<<endl;
     }
 }

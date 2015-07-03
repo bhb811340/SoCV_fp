@@ -4,7 +4,6 @@
 
 #include "atpg.h"
 #include "pattern.h"
-#include <bitset>
 
 using namespace std;
 
@@ -36,9 +35,24 @@ int main(int argc, char *argv[])
 
     atpg.PossibleEqualSet();
 
-    //atpg.circuit(0).dumpCircuit();
-    //atpg.circuit(1).dumpCircuit();
+    atpg.circuit(0).dumpCircuit();
+    atpg.circuit(1).dumpCircuit();
+
     
+    cout<<endl<<endl;
+    atpg.circuit(0).wire(8).setCutPoint();
+    atpg.circuit(1).wire(8).setCutPoint();
+
+    Pattern* patternSet0 = atpg.RandomGenPattern();
+	atpg.circuit(0).logicSim( patternSet0 );
+    atpg.circuit(1).logicSim( patternSet0 );
+
+    atpg.PossibleEqualSet();
+
+    atpg.circuit(0).dumpCircuit();
+    atpg.circuit(1).dumpCircuit();
+
+     
     atpg.circuit(0).writeVerilog(argv[3]);
     atpg.circuit(1).writeVerilog(argv[4]);
     //string cmd = "rm *.cnf *.result *.tmp";

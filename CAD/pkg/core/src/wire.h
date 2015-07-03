@@ -21,6 +21,7 @@ public:
     void addPosGate(int gateId){ _posGateId.push_back(gateId); };
     void resetPosGate(){ _posGateId.clear(); };
     void setPossibility(double onePossibility){ _onePossibility = onePossibility; };
+    void setCutPoint() { _isCutPoint = !_isCutPoint; }
 
     /*** get ***/
     string name(){ return _name; };
@@ -31,6 +32,7 @@ public:
     int value(){ return _value; };
     int valueSet() { return _valueSet; }
     double onePossibility(){ return _onePossibility; };
+    bool isCutPoint() { return _isCutPoint; }
 
     /*** debug ***/
     void print();
@@ -43,6 +45,7 @@ private:
     int _value; // true = 1, false = 0, undecided = -1
     int _valueSet;
     double _onePossibility;
+    bool _isCutPoint;
 };
 
 #endif // WIRE_H

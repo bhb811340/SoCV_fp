@@ -40,6 +40,8 @@ Pattern* Atpg::RandomGenPattern()
         Wire pWire = circuit(0).wire(i);
         if( pWire.type() == "PI" )
             pattern->value.push_back( rand() );
+        else if ( pWire.isCutPoint() )
+            pattern->value.push_back( rand() );
     }
     _pattern.push_back( pattern );
 
@@ -52,6 +54,8 @@ void Atpg::PossibleEqualSet()
     for( unsigned i = 0; i < circuit(0).numWire(); ++i )
     {
         Wire w = circuit(0).wire(i);
+        if( w.type() == "UNUSED" || w.type() == "TIE0" || w.type() == "TIE1" )
+            continue;
 
         // inverse equivalence
         int value = w.valueSet();
@@ -70,6 +74,8 @@ void Atpg::PossibleEqualSet()
     for( unsigned i = 0; i < circuit(1).numWire(); ++i )
     {
         Wire w = circuit(1).wire(i);
+        if( w.type() == "UNUSED" || w.type() == "TIE0" || w.type() == "TIE1" )
+            continue;
         
         // inverse equivalence
         int value = w.valueSet();

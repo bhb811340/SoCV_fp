@@ -28,7 +28,7 @@ public:
     unsigned numInWire(){ return _inWireId.size(); };
     string type();
     int level() { return _level; }
-	int typeID(){return _type;};
+	int typeID(){ return _type; };
 
     /*** debug ***/
     void print();

@@ -5,7 +5,8 @@ Wire::Wire()
     : _type(0),
       _value(-1),
       _preGateId(-1),
-      _onePossibility(-1)
+      _onePossibility(-1),
+      _isCutPoint(false)
 {
 }
 

@@ -22,10 +22,9 @@ public:
 
     /*** HCY add for logic simulation ***/
 	bool setLevel();
-    //Pattern*    RandomGenPattern();
 	void        logicSim( Pattern* PatternSet );
 	vector<int> value;
-	vector<bool> cutPoint;
+	//vector<bool> cutPoint;
 
     /*** set ***/
     void setName(string cktName){ _name = cktName; };
