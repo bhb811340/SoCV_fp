@@ -25,7 +25,7 @@ public:
     //Pattern*    RandomGenPattern();
 	void        logicSim( Pattern* PatternSet );
 	vector<int> value;
-	vector<bool> fixedValue;
+	vector<bool> cutPoint;
 
     /*** set ***/
     void setName(string cktName){ _name = cktName; };
