@@ -19,6 +19,8 @@ public:
 	~EC() {
 	  delete [] _circuit;
 	  delete [] _sat;
+	  delete [] _GateId;
+	  delete [] _dfsorder;
 	};
 
 	/***get***/
