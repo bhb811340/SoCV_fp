@@ -20,6 +20,7 @@ public:
 	~EC() {
 	  delete [] _GateId;
 	  delete [] _dfsorder;
+	  delete [] _dfsorder;
 	};
     /***set***/
     void setCircuit(Atpg atpg, int i) {_circuit[i] = atpg.circuit(i);} //get circuit from atpg
