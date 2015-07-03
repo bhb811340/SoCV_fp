@@ -156,6 +156,11 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
     }
 }
 
+Sat EC::miter(Sat s, vector<int>* dfs) {
+	Sat s_miter;
+	return s_miter;
+}
+
 bool EC::solveSat(Sat s) {
     //sat().writeCNF(spec().cktName() + ".cnf");
 
