@@ -461,9 +461,17 @@ Sat EC::miter(Sat s, vector<int>* dfs, int offset) {
 }
 
 bool EC::solveSat(Sat s) {
-    //sat().writeCNF(spec().cktName() + ".cnf");
+    s.writeCNF("EC_cutpoint.cnf");
 
-    /*string systemCmd = "./MiniSat_v1.14_linux "+ spec().fault(testFaultIndex).name() + "_propagate.cnf " + spec().fault(testFaultIndex).name() + "_propagate.cnf.result > MiniSAT.log";
-	system(systemCmd.c_str());*/
-return true;
+    string systemCmd = "./MiniSat_v1.14_linux "+ "EC_cutpoint.cnf " + "EC_cutpoint.cnf.result > MiniSAT.log";
+	system(systemCmd.c_str());
+    if(sat().readSATResult(resultFileName.c_str())){
+        cout << "SATISFIABLE\n";
+        return true;
+    }
+    else {
+        cout << "UNSATISFIABLE\n";
+        return false;
+    }
+        
 }
