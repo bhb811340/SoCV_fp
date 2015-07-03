@@ -39,7 +39,7 @@ private:
     string _name;
     int _preGateId;
     vector<int> _posGateId;
-    int _type; // PI = 1, PO = 2, PPI = 3, PPO = 4, NORMAL = 5, REMOVED = 6, UNUSED = 0
+    int _type; // PI = 1, PO = 2, CUT = 3, CUT_BAR = 4, TIE0 = 5, TIE1 = 6, NORMAL = 7, REMOVED = 8, UNUSED = 0
     int _value; // true = 1, false = 0, undecided = -1
     int _valueSet;
     double _onePossibility;

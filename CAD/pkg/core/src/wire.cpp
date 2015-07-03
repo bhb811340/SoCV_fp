@@ -28,19 +28,23 @@ int Wire::posGate(unsigned posGateNumeration){
 }
 
 void Wire::setType(string type){
-    // PI = 1, PO = 2, PPI = 3, PPO = 4, NORMAL = 5, REMOVED = 6, UNUSED = 0
+    // PI = 1, PO = 2, CUT = 3, CUT_BAR = 4, TIE0 = 5, TIE1 = 6, NORMAL = 7, REMOVED = 8, UNUSED = 0
     if(type == "PI")
         _type = 1;
     else if(type == "PO")
         _type = 2;
-    else if(type == "PPI")
+    else if(type == "CUT")
         _type = 3;
-    else if(type == "PPO")
+    else if(type == "CUT_BAR")
         _type = 4;
-    else if(type == "NORMAL")
+    else if(type == "TIE0")
         _type = 5;
-    else if(type == "REMOVED")
+    else if(type == "TIE1")
         _type = 6;
+    else if(type == "NORMAL")
+        _type = 7;
+    else if(type == "REMOVED")
+        _type = 8;
     else if(type == "UNUSED")
         _type = 0;
     else{
@@ -64,14 +68,16 @@ void Wire::setValue(int value){
 }
 
 string Wire::type(){
-    // PI = 1, PO = 2, PPI = 3, PPO = 4, UNUSED = 0
+    // PI = 1, PO = 2, CUT = 3, CUT_BAR = 4, TIE0 = 5, TIE1 = 6, NORMAL = 7, REMOVED = 8, UNUSED = 0
     switch(_type){
     case 1 : return "PI";
     case 2 : return "PO";
-    case 3 : return "PPI";
-    case 4 : return "PPO";
-    case 5 : return "NORMAL";
-    case 6 : return "REMOVED";
+    case 3 : return "CUT";
+    case 4 : return "CUT_BAR";
+    case 5 : return "TIE0";
+    case 6 : return "TIE1";
+    case 7 : return "NORMAL";
+    case 8 : return "REMOVED";
     case 0 : return "UNUSED";
     default :
         cout<<"Warning: undefined wire type\n";
