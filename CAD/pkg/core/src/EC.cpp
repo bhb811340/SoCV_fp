@@ -18,55 +18,44 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             s.addVariable(i);
             s.addVarValue();
         }
-        else if(ckt.wire(i).type() == "CUT" || ckt.wire(i).type() == "CUT_BAR"){
+        else {
             s.addVariable(offset+i);
             s.addVarValue();
         }
     }
-    for(unsigned i = 0 ; i < dfsorder.size() ; ++i){
-	    if(ckt.gate(dfsorder[i]).type() != "unknown") {
-		    s.addVariable(offset + dfsorder[i]);
-		    s.addVarValue();
-		}
-	}
 
 	// add clause
 	Clause clause;
 	clause.setType("STRUC");
 	for(unsigned i = 0 ; i < dfsorder.size() ; ++i){
-	    string gateType = ckt.gate(dfsorder[i]).type();
+		Gate g = ckt.gate(ckt.wire(dfsorder[i]).preGate());
+	    string gateType = g.type();
 		clause.resetVariable();
    
         if(gateType == "and"){
 		    // AND (i1'+i2'+...+o)(i1+o')(i2+o')(...)
-		    for(unsigned j = 0 ; j < ckt.gate(dfsorder[i]).numInWire() ; ++j){
-                int inWire = ckt.gate(dfsorder[i]).inWire(j);
+		    for(unsigned j = 0 ; j < g.numInWire() ; ++j){
+                int inWire = g.inWire(j);
                 if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1") //PI or tie0 or tie1
-                    clause.addVariable(s.wireIdToVariableId(inWire)); //PI, TIE0, TIE1 - i1 
-                else if (ckt.wire(inWire).type() == "CUT" || ckt.wire(inWire).type() == "CUT_BAR"){
-                    clause.addVariable(s.wireIdToVariableId(offset+inWire)); // CUT, CUT_BAR - i1
-                }
+                    clause.addVariable(s.wireIdToVariableId(inWire)); //i1, i2, ... 
                 else 
-                    clause.addVariable(s.wireIdToVariableId(wireVarSize + offset + ckt.wire(inWire).preGate())); //other - i1
-			    clause.addVariable((-1)*s.wireIdToVariableId(wireVarSize + offset + dfsorder[i])); //o'
+                    clause.addVariable(s.wireIdToVariableId(offset + inWire)); //i1, i2, ...
+			    clause.addVariable((-1)*s.wireIdToVariableId(offset + dfsorder[i])); //o'
                 s.addClause(clause);
                 clause.resetVariable();
             }
-		    for(unsigned j = 0 ; j < ckt.gate(dfsorder[i]).numInWire() ; ++j){
-                int inWire = ckt.gate(dfsorder[i]).inWire(j);
+		    for(unsigned j = 0 ; j < g.numInWire() ; ++j){
+                int inWire = g.inWire(j);
                 if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1") //PI or tie0 or tie1
                     clause.addVariable((-1) * s.wireIdToVariableId(inWire));
-                else if (ckt.wire(inWire).type() == "CUT" || ckt.wire(inWire).type() == "CUT_BAR"){
-                    clause.addVariable((-1)*s.wireIdToVariableId(offset+inWire));
-                }
                 else
-                    clause.addVariable((-1) * s.wireIdToVariableId(wireVarSize + offset + ckt.wire(inWire).preGate()));
+                    clause.addVariable((-1) * s.wireIdToVariableId(offset + inWire));
 		    }
-		    clause.addVariable(s.wireIdToVariableId(wireVarSize + offset + dfsorder[i]));
+		    clause.addVariable(s.wireIdToVariableId(offset + dfsorder[i]));
 		    s.addClause(clause);
 		    clause.resetVariable(); 
-            for(unsigned j = 0 ; j < ckt.gate(dfsorder[i]).numInWire() ; ++j){
-                int inWire = ckt.gate(dfsorder[i]).inWire(j);
+            for(unsigned j = 0 ; j < g.numInWire() ; ++j){
+                int inWire = g.inWire(j);
                 if(ckt.wire(inWire).type() == "TIE0"){
                     clause.addVariable((-1)*s.wireIdToVariableId(inWire));
                     s.addClause(clause);
