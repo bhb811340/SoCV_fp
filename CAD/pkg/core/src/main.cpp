@@ -4,6 +4,7 @@
 
 #include "atpg.h"
 #include "pattern.h"
+#include "EC.h"
 
 using namespace std;
 
@@ -35,6 +36,43 @@ int main(int argc, char *argv[])
 
     atpg.PossibleEqualSet();
 
+    int offset = atpg.circuit(0).numWire();
+
+    //Equivalence checking
+    //check each equivalence set
+    map< int, vector<int> >::iterator it;
+    for( it = atpg.PES.begin(); it != atpg.PES.end(); it++ )
+    {
+        cout << "Equivalence set "<< it->first <<" checking"<<endl;
+        for (unsigned i = 0; i < it->second.size(); ++i){   
+            for (unsigned j = 0; j < it->second.size(); ++j){
+                EC ec;
+              
+                ec.setCircuit(atpg, 0);
+                ec.setCircuit(atpg, 1);
+                
+                ec.cutpointAssign(0, i);
+                ec.cutpointAssign(1, j);
+                
+
+                ec.dfsorder(ec.getCircuit(0), ec.getId(0),ec.getDfsorder(0));
+                ec.dfsorder(ec.getCircuit(1), ec.getId(1),ec.getDfsorder(1));
+                
+                ec.getGateSat(ec.getCircuit(0), ec.getSat(),ec.getDfsorder(0) , 0);
+                ec.getGateSat(ec.getCircuit(1), ec.getSat(),ec.getDfsorder(1) , offset);
+
+                ec.solveSat(ec.miter(ec.getSat(),ec.getDfsorderPointer(),offset));
+                
+                //ec.getPES(it->second); 
+            }
+        }
+        //cout<<"Value: "<< bitset<32>( it->first )<<" / "<< bitset<32>( ~it->first )<<'\t';
+        //for( unsigned j = 0; j < it->second.size(); ++j )
+         //   cout<< it->second[j] <<' ';
+        //cout<<endl;
+    }
+
+
     //atpg.circuit(0).dumpCircuit();
     //atpg.circuit(1).dumpCircuit();
 
@@ -52,7 +90,7 @@ int main(int argc, char *argv[])
 
     //atpg.circuit(0).dumpCircuit();
     //atpg.circuit(1).dumpCircuit();
-//*/
+*/
      
     atpg.circuit(0).writeVerilog(argv[3]);
     atpg.circuit(1).writeVerilog(argv[4]);
