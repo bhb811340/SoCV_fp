@@ -654,23 +654,29 @@ void Circuit::logicSim( Pattern* PatternSet )
 
 void Circuit::dumpCircuit()
 {
+    cout<<endl;
+    cout<<"  Gate Name\tGate Level"<<endl;
+    cout<<"========================================="<<endl;
     for( unsigned i = 0; i< numGate(); ++i )
     {
         Gate g = gate( i );
-        cout<< g.name() << '\t' ;
-        cout<< "level" << g.level() << '\t' ;
+        cout<< "  " << g.name() << '\t' ;
+        cout<< g.level() << '\t' ;
         //cout<< bitset<32>( value[i] ) <<'\t';
         cout<< endl;
     }
 
+    cout<<endl;
+    cout<<"  WireID\tWire Name\tType    \tValue"<<endl;
+    cout<<"==================================================================================="<<endl;
     for( unsigned j = 0; j< numWire(); ++j )
     {
         Wire w = wire( j );
-        cout<< j << '\t';
-        cout<< w.name() << '\t';
-        cout<< "type:" << setiosflags(ios::left) << setw(8) << w.type() <<'\t';
+        cout<< "  "<< j << "\t\t";
+        cout<< w.name() << "\t\t";
+        cout<< setiosflags(ios::left) << setw(8) << w.type() <<'\t';
         if( w.type() != "UNUSED" )
-            cout<< "value=" << bitset<32>( w.valueSet() )<<'\t';
+            cout<< bitset<32>( w.valueSet() )<<'\t';
         cout<< w.isCutPoint() <<'\t';
         cout<<endl;
     }

@@ -277,7 +277,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             }
             if(ckt.wire(inWire).type() == "TIE0"){
                 clause.addVariable((-1)*s.wireIdToVariableId(inWire));
-                s.addClause(clause); 
+                s.addClause(clause);        
                 clause.resetVariable();
             }
             else if (ckt.wire(inWire).type() == "TIE1"){
@@ -462,9 +462,10 @@ Sat EC::miter(Sat s, vector<int>* dfs, int offset) {
 bool EC::solveSat(Sat s) {
     s.writeCNF("EC_cutpoint.cnf");
 
-    string systemCmd = "./MiniSat_v1.14_linux "+ "EC_cutpoint.cnf " + "EC_cutpoint.cnf.result > MiniSAT.log";
+    string systemCmd = "./MiniSat_v1.14_linux EC_cutpoint.cnf EC_cutpoint.cnf.result > MiniSAT.log";
 	system(systemCmd.c_str());
-    if(sat().readSATResult(resultFileName.c_str())){
+    string resultFileName = "EC_cutpoint.cnf.result";
+    if(s.readSATResult(resultFileName.c_str())){
         cout << "SATISFIABLE\n";
         return true;
     }

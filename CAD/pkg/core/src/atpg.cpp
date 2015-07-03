@@ -8,6 +8,7 @@
 #include <fstream>
 #include <math.h>
 #include <bitset>
+#include <iomanip>
 
 using namespace std;
 
@@ -102,13 +103,35 @@ void Atpg::PossibleEqualSet()
     }
 
 
+}
+
+void Atpg::printPES()
+{
     // debug
     map< int, vector<int> >::iterator it;
-    for( it = PES.begin(); it != PES.end(); it++ )
+    int i = 0;
+    for( it = PES.begin(); it != PES.end(); it++ , ++i)
     {
-        cout<<"Value: "<< bitset<32>( it->first )<<" / "<< bitset<32>( ~it->first )<<'\t';
+        cout<<"Set"<<i<<":\t";
+        //cout<<"Value: "<< bitset<32>( it->first )<<" / "<< bitset<32>( ~it->first )<<'\t';
         for( unsigned j = 0; j < it->second.size(); ++j )
-            cout<< it->second[j] <<' ';
+        {
+            unsigned ID = it->second[j];
+            //cout<< ID ;
+
+            int c;
+            if( ID < circuit(0).numWire() )
+                c = 0;
+            else
+            {
+                ID -= circuit(0).numWire();
+                c = 1;
+            }
+            Gate g = circuit(c).gate( circuit(c).wire(ID).preGate() );
+            cout<< circuit(c).wire(ID).name() <<' ';
+            //cout<<'('<< g.name() <<'/'<< g.level() <<") ";
+
+        }
         cout<<endl;
     }
 }

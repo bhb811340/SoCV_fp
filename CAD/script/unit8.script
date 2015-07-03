@@ -1,0 +1,1 @@
+./bin/CAD_EC testcase/unit8/in_1.v testcase/unit8/in_2.v output/unit8_in_1.v output/unit8_in_2.v
