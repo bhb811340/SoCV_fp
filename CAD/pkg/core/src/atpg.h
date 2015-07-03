@@ -18,6 +18,7 @@ public:
     Pattern*    RandomGenPattern();
     void        PossibleEqualSet();
     map< int, vector<int> > PES; // map< wire_value, vector< Gate_ID > >
+    void        printPES();
 
     /*** get ***/
     unsigned duplicateIndex(){ return _duplicateIndex; };
