@@ -33,7 +33,7 @@ public:
     vector<int>* getDfsorderPointer() {return _dfsorder;}
 	/***sat***/
 	void getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset);
-	Sat miter(Sat s, vector<int>* dfs, int offset);
+	Sat miter(Sat& s, vector<int>* dfs, int offset);
 	bool solveSat(Sat s);
     void dfsorder(Circuit ckt, int WireId, vector<int> list) {
 		Gate g = ckt.gate(ckt.wire(WireId).preGate());
