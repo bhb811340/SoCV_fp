@@ -534,8 +534,8 @@ bool Circuit::setLevel()
 
 	if(value.size() == 0)
 		value.assign(numWire() , 0);
-	if(fixedValue.size() == 0)
-		fixedValue.assign(numWire() , 0);
+	if(cutPoint.size() == 0)
+		cutPoint.assign(numWire() , 0);
 
 	return true;
 }
@@ -577,7 +577,7 @@ void Circuit::logicSim( Pattern* PatternSet )
 
 	for(unsigned i = 0 ; i < topologicalSequence.size() ; ++i)
 	{
-		if(fixedValue[i])
+		if( cutPoint[i])
 			continue;
 		int gateID = topologicalSequence[i];
 		Gate targetGate = gate(gateID);
