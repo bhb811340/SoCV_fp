@@ -50,11 +50,17 @@ Pattern* Atpg::RandomGenPattern()
 
 void Atpg::PossibleEqualSet()
 {
+    PES.clear();
+
     // Check equivalence for each wire
     for( unsigned i = 0; i < circuit(0).numWire(); ++i )
     {
         Wire w = circuit(0).wire(i);
         if( w.type() == "UNUSED" || w.type() == "TIE0" || w.type() == "TIE1" )
+            continue;
+        if( w.type() == "PI" )
+            continue;
+        if( w.isCutPoint() )
             continue;
 
         // inverse equivalence
@@ -75,6 +81,10 @@ void Atpg::PossibleEqualSet()
     {
         Wire w = circuit(1).wire(i);
         if( w.type() == "UNUSED" || w.type() == "TIE0" || w.type() == "TIE1" )
+            continue;
+        if( w.type() == "PI" )
+            continue;
+        if( w.isCutPoint() )
             continue;
         
         // inverse equivalence

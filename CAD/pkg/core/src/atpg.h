@@ -17,7 +17,7 @@ public:
     /*** Gene Pattern ***/
     Pattern*    RandomGenPattern();
     void        PossibleEqualSet();
-    map< int, vector<int> > PES;
+    map< int, vector<int> > PES; // map< wire_value, vector< Gate_ID > >
 
     /*** get ***/
     unsigned duplicateIndex(){ return _duplicateIndex; };
