@@ -8,13 +8,13 @@
 
 using namespace std;
 
-void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
+void EC::getGateSat(Circuit* ckt, Sat s, vector<int> dfsorder, int offset){
     // construct variable map
 	s.addVariable(-1);
 	s.addVarValue();
     
-    for(unsigned i = 0 ; i < ckt.numWire() ; ++i) {
-        if(ckt.wire(i).type() == "PI" || ckt.wire(i).type() == "TIE0" || ckt.wire(i).type() == "TIE1") {
+    for(unsigned i = 0 ; i < ckt->numWire() ; ++i) {
+        if(ckt->wire(i).type() == "PI" || ckt->wire(i).type() == "TIE0" || ckt->wire(i).type() == "TIE1") {
             s.addVariable(i);
             s.addVarValue();
         }
@@ -28,7 +28,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
 	Clause clause;
 	clause.setType("STRUC");
 	for(unsigned i = 0 ; i < dfsorder.size() ; ++i){
-		Gate g = ckt.gate(ckt.wire(dfsorder[i]).preGate());
+		Gate g = ckt->gate(ckt->wire(dfsorder[i]).preGate());
 	    string gateType = g.type();
 		clause.resetVariable();
    
@@ -36,7 +36,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
 		    // AND (i1'+i2'+...+o)(i1+o')(i2+o')(...)
 		    for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1") //PI or tie0 or tie1
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1") //PI or tie0 or tie1
                     clause.addVariable(s.wireIdToVariableId(inWire)); //i1, i2, ... 
                 else 
                     clause.addVariable(s.wireIdToVariableId(offset + inWire)); //i1, i2, ...
@@ -46,7 +46,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             }
 		    for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1") //PI or tie0 or tie1
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1") //PI or tie0 or tie1
                     clause.addVariable((-1) * s.wireIdToVariableId(inWire));
                 else
                     clause.addVariable((-1) * s.wireIdToVariableId(offset + inWire));
@@ -56,12 +56,12 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
 		    clause.resetVariable(); 
             for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "TIE0"){
+                if(ckt->wire(inWire).type() == "TIE0"){
                     clause.addVariable((-1)*s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
                 }
-                else if (ckt.wire(inWire).type() == "TIE1"){
+                else if (ckt->wire(inWire).type() == "TIE1"){
                     clause.addVariable(s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
@@ -72,7 +72,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
 		    // NAND (i1'+i2'+...+o')(i1+o)(i2+o)(...)
 		    for(unsigned j = 0 ; j < g.numInWire() ; ++j){
 		        int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1") //PI or tie0 or tie1
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1") //PI or tie0 or tie1
                     clause.addVariable(s.wireIdToVariableId(inWire));
                 else
 		            clause.addVariable(s.wireIdToVariableId(offset + inWire));
@@ -82,7 +82,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             }
 		    for(unsigned j = 0 ; j < g.numInWire() ; ++j){
 		        int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1") //PI or tie0 or tie1
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1") //PI or tie0 or tie1
                     clause.addVariable((-1) * s.wireIdToVariableId(inWire));
                 else
                     clause.addVariable((-1) * s.wireIdToVariableId(offset + inWire));
@@ -92,12 +92,12 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             clause.resetVariable();
             for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "TIE0"){
+                if(ckt->wire(inWire).type() == "TIE0"){
                     clause.addVariable((-1)*s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
                 }
-                else if (ckt.wire(inWire).type() == "TIE1"){
+                else if (ckt->wire(inWire).type() == "TIE1"){
                     clause.addVariable(s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
@@ -108,7 +108,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
 		    // OR (i1+i2+...+o')(i1'+o)(i2'+o)(...)
 			for(unsigned j = 0 ; j < g.numInWire() ; ++j){
 			    int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1") //PI or tie0 or tie1
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1") //PI or tie0 or tie1
 				    clause.addVariable((-1)*s.wireIdToVariableId(inWire));
                 else
                     clause.addVariable((-1)*s.wireIdToVariableId(offset + inWire));
@@ -118,7 +118,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
 			}
 			for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1") //PI or tie0 or tie1
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1") //PI or tie0 or tie1
                     clause.addVariable(s.wireIdToVariableId(inWire));
                 else
                     clause.addVariable(s.wireIdToVariableId(offset + inWire));
@@ -128,12 +128,12 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
 			clause.resetVariable();
             for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "TIE0"){
+                if(ckt->wire(inWire).type() == "TIE0"){
                     clause.addVariable((-1)*s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
                 }
-                else if (ckt.wire(inWire).type() == "TIE1"){
+                else if (ckt->wire(inWire).type() == "TIE1"){
                     clause.addVariable(s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
@@ -144,7 +144,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
 		    // NOR (i1+i2+...+o)(i1'+o')(i2'+o')(...)
 			for(unsigned j = 0 ; j < g.numInWire() ; ++j){
 			    int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1")
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1")
                     clause.addVariable((-1) * s.wireIdToVariableId(inWire));
                 else
                     clause.addVariable((-1) * s.wireIdToVariableId(offset + inWire));
@@ -154,7 +154,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
 	        }
 	        for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1") 
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1") 
                     clause.addVariable(s.wireIdToVariableId(inWire)); 
                 else
                     clause.addVariable(s.wireIdToVariableId(offset + inWire)); 
@@ -164,12 +164,12 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
 	        clause.resetVariable();
             for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "TIE0"){
+                if(ckt->wire(inWire).type() == "TIE0"){
                     clause.addVariable((-1)*s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
                 }
-                else if (ckt.wire(inWire).type() == "TIE1"){
+                else if (ckt->wire(inWire).type() == "TIE1"){
                     clause.addVariable(s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
@@ -179,7 +179,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
 		else if(gateType == "not"){
 		    // NOT (i'+o')(i+o)
 			int inWire = g.inWire(0);
-            if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1"){
+            if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1"){
                 clause.addVariable((-1) * s.wireIdToVariableId(inWire));
                 clause.addVariable((-1)*s.wireIdToVariableId(offset + dfsorder[i]));
                 s.addClause(clause);
@@ -199,11 +199,11 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
                 s.addClause(clause);
                 clause.resetVariable();
             }
-            if(ckt.wire(inWire).type() == "TIE0"){
+            if(ckt->wire(inWire).type() == "TIE0"){
                 clause.addVariable((-1)*s.wireIdToVariableId(inWire));
                 s.addClause(clause);
                 clause.resetVariable();             }
-            else if (ckt.wire(inWire).type() == "TIE1"){
+            else if (ckt->wire(inWire).type() == "TIE1"){
                 clause.addVariable(s.wireIdToVariableId(inWire));
                 s.addClause(clause);
                 clause.resetVariable();
@@ -212,7 +212,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
         else if(gateType == "buf"){
             // BUF (i+o')(i'+o)
             int inWire = g.inWire(0);
-            if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1"){
+            if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1"){
                 clause.addVariable(s.wireIdToVariableId(inWire));
                 clause.addVariable((-1)*s.wireIdToVariableId(offset + dfsorder[i]));
                 s.addClause(clause);
@@ -232,12 +232,12 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
                 s.addClause(clause);
                 clause.resetVariable();
             }
-            if(ckt.wire(inWire).type() == "TIE0"){
+            if(ckt->wire(inWire).type() == "TIE0"){
                 clause.addVariable((-1)*s.wireIdToVariableId(inWire));
                 s.addClause(clause);        
                 clause.resetVariable();
             }
-            else if (ckt.wire(inWire).type() == "TIE1"){
+            else if (ckt->wire(inWire).type() == "TIE1"){
                 clause.addVariable(s.wireIdToVariableId(inWire));
                 s.addClause(clause);
                 clause.resetVariable();
@@ -249,14 +249,14 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             //(i1'+i2+i3+...+io)(i1+i2'+...+io)
             for(unsigned j = 0; j < g.numInWire(); ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1") 
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1") 
                     clause.addVariable((-1) * s.wireIdToVariableId(inWire));
                 else
                     clause.addVariable((-1) * s.wireIdToVariableId(offset + inWire));
                 for(unsigned k = 0; k < g.numInWire(); ++k){
                     int inWire2 = g.inWire(k);
                     if(k != j){
-                        if(ckt.wire(inWire2).type() == "PI" || ckt.wire(inWire2).type() == "TIE0" || ckt.wire(inWire2).type() == "TIE1")
+                        if(ckt->wire(inWire2).type() == "PI" || ckt->wire(inWire2).type() == "TIE0" || ckt->wire(inWire2).type() == "TIE1")
                             clause.addVariable(s.wireIdToVariableId(inWire2));
                         else
                             clause.addVariable(s.wireIdToVariableId(offset + inWire2));
@@ -269,7 +269,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             //(i1+i2+...+io')
             for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1")
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1")
                     clause.addVariable(s.wireIdToVariableId(inWire));
                 else
                     clause.addVariable(s.wireIdToVariableId(offset + inWire));
@@ -280,7 +280,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             //(i1'+i2'+i3'+...io')
             for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1")
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1")
                     clause.addVariable((-1) * s.wireIdToVariableId(inWire));
                 else
                     clause.addVariable((-1) * s.wireIdToVariableId(offset + inWire));
@@ -290,12 +290,12 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             clause.resetVariable();
             for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "TIE0"){
+                if(ckt->wire(inWire).type() == "TIE0"){
                     clause.addVariable((-1)*s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
                 }
-                else if (ckt.wire(inWire).type() == "TIE1"){
+                else if (ckt->wire(inWire).type() == "TIE1"){
                     clause.addVariable(s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
@@ -308,14 +308,14 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             //(i1'+i2+i3+...+io')(i1+i2'+...+io')
             for(unsigned j = 0; j < g.numInWire(); ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1")
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1")
                     clause.addVariable((-1) * s.wireIdToVariableId(inWire));
                 else
                     clause.addVariable((-1) * s.wireIdToVariableId(offset + inWire));
                 for(unsigned k = 0; k < g.numInWire(); ++k){
                     int inWire2 = g.inWire(k);
                     if(k != j){
-                        if(ckt.wire(inWire2).type() == "PI" || ckt.wire(inWire2).type() == "TIE0" || ckt.wire(inWire2).type() == "TIE1")
+                        if(ckt->wire(inWire2).type() == "PI" || ckt->wire(inWire2).type() == "TIE0" || ckt->wire(inWire2).type() == "TIE1")
                             clause.addVariable(s.wireIdToVariableId(inWire2));
                         else
                             clause.addVariable(s.wireIdToVariableId(offset + inWire2));
@@ -328,7 +328,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             //(i1+i2+...+io)
             for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1")
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1")
                     clause.addVariable(s.wireIdToVariableId(inWire));
                 else
                     clause.addVariable(s.wireIdToVariableId(offset + inWire));
@@ -340,7 +340,7 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             //(i1'+i2'+i3'+...io)
             for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "PI" || ckt.wire(inWire).type() == "TIE0" || ckt.wire(inWire).type() == "TIE1")
+                if(ckt->wire(inWire).type() == "PI" || ckt->wire(inWire).type() == "TIE0" || ckt->wire(inWire).type() == "TIE1")
                     clause.addVariable((-1) * s.wireIdToVariableId(inWire));
                 else
                     clause.addVariable((-1) * s.wireIdToVariableId(offset + inWire));
@@ -351,12 +351,12 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             
             for(unsigned j = 0 ; j < g.numInWire() ; ++j){
                 int inWire = g.inWire(j);
-                if(ckt.wire(inWire).type() == "TIE0"){
+                if(ckt->wire(inWire).type() == "TIE0"){
                     clause.addVariable((-1)*s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
                 }
-                else if (ckt.wire(inWire).type() == "TIE1"){
+                else if (ckt->wire(inWire).type() == "TIE1"){
                     clause.addVariable(s.wireIdToVariableId(inWire));
                     s.addClause(clause);
                     clause.resetVariable();
