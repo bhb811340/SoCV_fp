@@ -714,6 +714,8 @@ bool Circuit::writeVerilog(string fileName)
         cout<<"Error: "<<fileName<<" cannot be opened.\n";
         return false;
     }
+    /*
+     * This is for test
     for(unsigned int i=2;i<_numWire;i++)
     {
         if(_wire[i].name().compare("d") == 0)
@@ -723,6 +725,7 @@ bool Circuit::writeVerilog(string fileName)
         else if(_wire[i].name().compare("g") == 0)
             _wire[i].setType("CUT_BAR");
     }
+    */
     // Module term
     bool firstTime = true;
     outVeriFile << "module top ( ";
