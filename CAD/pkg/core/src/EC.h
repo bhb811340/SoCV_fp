@@ -13,6 +13,7 @@ public:
     EC() {
 	  _circuit = new Circuit[2];
 	  _sat = new Sat[2];
+	  _GateId = new int[2];
 	};
 	~EC() {
 	  delete [] _circuit;
@@ -41,6 +42,7 @@ public:
 private:
     Circuit* _circuit;
 	Sat* _sat;
+	int* _GateId;
 };
 
 #endif
