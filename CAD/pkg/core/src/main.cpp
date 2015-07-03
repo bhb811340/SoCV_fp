@@ -9,8 +9,8 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    if(argc != 3){
-        cout<<"usage: CAD_EC <designA.v> <designB.v> \n";
+    if(argc != 5){
+        cout<<"usage: CAD_EC <inDesignA.v> <inDesignB.v> <outDesignA.v> <outDesignB.v>\n";
         return 0;
     }
 
@@ -37,7 +37,9 @@ int main(int argc, char *argv[])
 
     //atpg.circuit(0).dumpCircuit();
     //atpg.circuit(1).dumpCircuit();
-
+    
+    atpg.circuit(0).writeVerilog(argv[3]);
+    atpg.circuit(1).writeVerilog(argv[4]);
     //string cmd = "rm *.cnf *.result *.tmp";
     //system(cmd.c_str());
 

@@ -686,3 +686,105 @@ void Circuit::addGate(unsigned gateId, string gateName, string gateType){
     _gate[gateId].setType(gateType);
 }
 
+bool Circuit::writeVerilog(string fileName)
+{
+    ofstream outVeriFile(fileName.c_str(), ios::binary);
+    if(!outVeriFile.is_open()){
+        cout<<"Error: "<<fileName<<" cannot be opened.\n";
+        return false;
+    }
+    // Module term
+    bool firstTime = true;
+    outVeriFile << "module top ( ";
+    for(unsigned i=0;i<_numWire;i++)
+    {
+        if(_wire[i].type() == "PI" || _wire[i].type() == "PO")
+        {
+            if(firstTime == true)
+            {
+                outVeriFile << _wire[i].name();
+                firstTime = false;
+            }
+            else
+            {
+                outVeriFile << ", " << _wire[i].name();
+            }
+        }
+    }
+    outVeriFile << ");" << endl;
+    // Inputs
+    firstTime = true;
+    outVeriFile << "input ";
+    for(unsigned i=0;i<_numWire;i++)
+    {
+        if(_wire[i].type() == "PI")
+        {
+            if(firstTime == true)
+            {
+                outVeriFile << _wire[i].name();
+                firstTime = false;
+            }
+            else
+            {
+                outVeriFile << ", " << _wire[i].name();
+            }
+        }
+    }
+    outVeriFile << ";" << endl;
+    // Outputs
+    firstTime = true;
+    outVeriFile << "output ";
+    for(unsigned i=0;i<_numWire;i++)
+    {
+        if(_wire[i].type() == "PO")
+        {
+            if(firstTime == true)
+            {
+                outVeriFile << _wire[i].name();
+                firstTime = false;
+            }
+            else
+            {
+                outVeriFile << ", " << _wire[i].name();
+            }
+        }
+    }
+    outVeriFile << ";" << endl;
+    // Wires
+    firstTime = true;
+    outVeriFile << "wire ";
+    for(unsigned i=0;i<_numWire;i++)
+    {
+        if(_wire[i].type() == "NORMAL")
+        {
+            if(firstTime == true)
+            {
+                outVeriFile << _wire[i].name();
+                firstTime = false;
+            }
+            else
+            {
+                outVeriFile << ", " << _wire[i].name();
+            }
+        }
+    }
+    outVeriFile << ";" << endl;
+    // Gates
+    for(unsigned i=0;i<_numGate;i++)
+    {
+        outVeriFile << _gate[i].type() << " (";
+        outVeriFile << _wire[_gate[i].outWire()].name();
+        for(unsigned j=0;j<_gate[i].numInWire();j++)
+        {
+            outVeriFile << ", " << _wire[_gate[i].inWire(j)].name();
+        }
+        outVeriFile << ");" << endl;
+    }
+
+    outVeriFile << endl;
+    outVeriFile << "endmodule" << endl;
+    outVeriFile.close();
+    return true;
+
+}
+
