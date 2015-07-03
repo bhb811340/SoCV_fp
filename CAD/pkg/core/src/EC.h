@@ -22,7 +22,8 @@ public:
 
 	/***get***/
 	Circuit& getCircuit(int i) {return _circuit[i];};
-	Sat& getSat(int i){return _sat[i];};
+	Sat& getSat(int i) {return _sat[i];};
+	int getId(int i) {return _GateId[i];};
 
 	/***sat***/
 	void getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset);
