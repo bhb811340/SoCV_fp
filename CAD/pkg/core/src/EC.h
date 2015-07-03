@@ -13,6 +13,7 @@ public:
     EC() {
 	  _circuit = new Circuit[2];
 	  _sat = new Sat[2];
+	  _GateId = new int[2];
 	};
 	~EC() {
 	  delete [] _circuit;
@@ -21,7 +22,8 @@ public:
 
 	/***get***/
 	Circuit& getCircuit(int i) {return _circuit[i];};
-	Sat& getSat(int i){return _sat[i];};
+	Sat& getSat(int i) {return _sat[i];};
+	int getId(int i) {return _GateId[i];};
 
 	/***sat***/
 	void getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset);
@@ -41,6 +43,7 @@ public:
 private:
     Circuit* _circuit;
 	Sat* _sat;
+	int* _GateId;
 };
 
 #endif
