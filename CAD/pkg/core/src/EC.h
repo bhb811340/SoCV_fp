@@ -28,7 +28,7 @@ public:
 
 	/***sat***/
 	void getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset);
-	Sat miter(Sat s, vector<int>* dfs);
+	Sat miter(Sat s, vector<int>* dfs, int offset);
 	bool solveSat(Sat s);
     void dfsorder(Circuit ckt, int GateId, vector<int> list) {
         for(unsigned i = 0; i < ckt.gate(GateId).numInWire(); ++i) {
