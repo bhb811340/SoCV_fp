@@ -4,6 +4,7 @@
 
 #include "atpg.h"
 #include "pattern.h"
+#include <bitset>
 
 using namespace std;
 

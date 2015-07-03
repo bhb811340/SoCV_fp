@@ -36,47 +36,61 @@ Pattern* Atpg::RandomGenPattern()
     srand( time(NULL) );
     for( unsigned i=0 ; i < circuit(0).numWire(); ++i )
     {
+        // Generate 32 patterns for one PI ( int = 32 bits = 32 patterns )
         Wire pWire = circuit(0).wire(i);
         if( pWire.type() == "PI" )
             pattern->value.push_back( rand() );
     }
     _pattern.push_back( pattern );
 
-
     return pattern;
 }
 
 void Atpg::PossibleEqualSet()
 {
+    // Check equivalence for each wire
     for( unsigned i = 0; i < circuit(0).numWire(); ++i )
     {
         Wire w = circuit(0).wire(i);
+
+        // inverse equivalence
         int value = w.valueSet();
+        if( value < 0 )
+            value = ~value;
+
         map< int, vector<int> >::iterator it;
         it = PES.find( value );
 
-        if( it == PES.end() )
+        if( it == PES.end() )  //already exit same value wire
             PES.insert( it, pair<int, vector<int> >( value, vector<int>() ) );
+        // if not, add to search list
         PES[ value ].push_back( i );
     }
 
     for( unsigned i = 0; i < circuit(1).numWire(); ++i )
     {
         Wire w = circuit(1).wire(i);
+        
+        // inverse equivalence
         int value = w.valueSet();
+        if( value < 0 )
+            value = ~value;
+        
         map< int, vector<int> >::iterator it;
         it = PES.find( value );
 
-        if( it == PES.end() )
+        if( it == PES.end() )  // already exist same value wire
             PES.insert( it, pair<int, vector<int> >( value, vector<int>() ) );
+        // if not, add to search list
         PES[ value ].push_back( i + circuit(0).numWire() );
     }
 
+
+    // debug
     map< int, vector<int> >::iterator it;
     for( it = PES.begin(); it != PES.end(); it++ )
     {
-        //cout<<"IN"<<endl;
-        cout<<"Value:"<< bitset<32>( it->first )<<'\t';
+        cout<<"Value: "<< bitset<32>( it->first )<<" / "<< bitset<32>( ~it->first )<<'\t';
         for( unsigned j = 0; j < it->second.size(); ++j )
             cout<< it->second[j] <<' ';
         cout<<endl;
