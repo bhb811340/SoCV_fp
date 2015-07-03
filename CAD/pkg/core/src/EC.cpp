@@ -23,10 +23,9 @@ void EC::getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset){
             s.addVarValue();
         }
     }
-    int wireVarSize = ckt.numWire(); 
     for(unsigned i = 0 ; i < dfsorder.size() ; ++i){
 	    if(ckt.gate(dfsorder[i]).type() != "unknown") {
-		    s.addVariable(wireVarSize + offset + dfsorder[i]);
+		    s.addVariable(offset + dfsorder[i]);
 		    s.addVarValue();
 		}
 	}
