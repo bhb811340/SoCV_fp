@@ -32,15 +32,16 @@ public:
 	void getGateSat(Circuit ckt, Sat s, vector<int> dfsorder, int offset);
 	Sat miter(Sat s, vector<int>* dfs, int offset);
 	bool solveSat(Sat s);
-    void dfsorder(Circuit ckt, int GateId, vector<int> list) {
-        for(unsigned i = 0; i < ckt.gate(GateId).numInWire(); ++i) {
-            int inWire = ckt.gate(GateId).inWire(i);
+    void dfsorder(Circuit ckt, int WireId, vector<int> list) {
+		Gate g = ckt.gate(ckt.wire(WireId).preGate());
+        for(unsigned i = 0; i < g.numInWire(); ++i) {
+            int inWire = g.inWire(i);
             if ( ckt.wire(inWire).type() != "PI" && ckt.wire(inWire).type() != "CUT"
 			  && ckt.wire(inWire).type() != "CUT_BAR" && 
 			  ckt.wire(inWire).type() != "TIE0" && ckt.wire(inWire).type() != "TIE1")
-                dfsorder(ckt, ckt.wire(inWire).preGate(), list);
+                dfsorder(ckt, inWire, list);
         }
-        list.push_back(GateId);
+        list.push_back(WireId);
     }
 	/***cut***/
 
