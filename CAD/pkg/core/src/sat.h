@@ -19,6 +19,7 @@ public:
     int wireIdToVariableId(int wireId);
     int gateIdToVariableId(int gateId);
     bool variableValue(unsigned variableId);
+	int getMapSize(){ return _wireVarMap.size(); };
 
     /*** set ***/
     void addClause(Clause clause){ _cnf.push_back(clause); };
@@ -42,7 +43,6 @@ private:
     vector<Clause> _cnf;
     vector<int> _variable; // notice that _variable[0] is redundant
     map<int, int> _wireVarMap;
-    map<int, int> _gateVarMap;
     vector<bool> _variableValue;
 
 
