@@ -13,8 +13,10 @@ public:
 	~Cut() { 
 		_cutNode.clear(); 
 		_counterPart.clear(); };
-	int getNode(int i) { return _cutNode[i]; };
+	int getCut(int i) { return _cutNode[i]; };
 	int getCounter(int i) { return _counterPart[i]; };
+	unsigned getCutSize() { return _cutNode.size(); };
+	unsigned getCounterSize() { return _counterPart.size(); };
 	void pushCut(int Id) { _cutNode.push_back(Id); };
 	void pushCounter(int Id) { _counterPart.push_back(Id); };
 

@@ -58,8 +58,8 @@ int main(int argc, char *argv[])
             for (unsigned j = 0; j < ckt2.size(); ++j){
                 EC ec;
               
-                ec.setCircuit(atpg, 0);
-                ec.setCircuit(atpg, 1);
+                ec.setCircuit(0, atpg.circuit(0));
+                ec.setCircuit(1, atpg.circuit(1));
                 
                 ec.cutpointAssign(0, ckt1[i]);
                 ec.cutpointAssign(1, ckt2[j]);
@@ -78,6 +78,14 @@ int main(int argc, char *argv[])
 				}
             }
         }
+		if (c.getCutSize() > 0 ) {
+			for (unsigned i = 0; i < c.getCutSize(); ++i) {
+				atpg.circuit(0).wire(c.getCut(i)).setCutPoint();
+				atpg.circuit(0).wire(c.getCut(i)).setType("CUT");
+			}
+		}
+		else 
+			cout << "No EC cutpoints found!\n";
 
         //cout<<"Value: "<< bitset<32>( it->first )<<" / "<< bitset<32>( ~it->first )<<'\t';
         //for( unsigned j = 0; j < it->second.size(); ++j )
