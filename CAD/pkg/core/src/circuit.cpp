@@ -34,6 +34,19 @@ bool Circuit::readVerilog(string fileName){
         return false;
     }
 
+    // add 1'b0 to wire[0]
+    _wire[_numWire].setType("TIE0");
+    _wire[_numWire].setName("1'b0");
+    _wire[_numWire].setValue(0);
+    _wireMap["1'b0"] = _numWire;
+    _numWire++;
+    // add 1'b1 to wire[1]
+    _wire[_numWire].setType("TIE1");
+    _wire[_numWire].setName("1'b1");
+    _wire[_numWire].setValue(1);
+    _wireMap["1'b1"] = _numWire;
+    _numWire++;
+
     string tmp;
     string sliced;  //This is for gate type
     string token = "WAIT";
@@ -96,28 +109,6 @@ bool Circuit::readVerilog(string fileName){
                         else{
                             //cout<<"end of wire\n";
                             token = "WAIT_GATE";
-                        }
-                    }
-                    else if(!token.compare("DFF") && sliced.compare("CK")){
-                        if(sliced.compare(";")){
-                        //add an dff gate
-                            if(name_flag){
-                                _gate[_numGate].setName(sliced);
-                                _gate[_numGate].setType("dff");
-                                name_flag = false;
-                                out_flag = true;
-                            }
-                            else if(out_flag){
-                                _gate[_numGate].setOutWire(_wireMap.find(sliced)->second);
-                                out_flag = false;
-                            }
-                            else{
-                                _gate[_numGate].addInWire(_wireMap.find(sliced)->second);
-                            }
-                        }
-                        else{
-                            token = "WAIT_GATE";
-                            _numGate++;
                         }
                     }
                     else if(!token.compare("NOT")){
@@ -417,8 +408,8 @@ void Circuit::checkWire(){
                 }
             }
             else{
-                // pi
-                if(wire(i).type() != "PI"){
+                // pi, TIE0, or TIE1
+                if(wire(i).type() != "PI" && wire(i).type() != "TIE0" && wire(i).type() != "TIE1"){
                     cout<<"Warning: wire "<<wire(i).name()<<" has no pre connection, set the type to PI.\n";
                     wire(i).setType("PI");
                 }
