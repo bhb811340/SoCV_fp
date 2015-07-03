@@ -714,10 +714,19 @@ bool Circuit::writeVerilog(string fileName)
         cout<<"Error: "<<fileName<<" cannot be opened.\n";
         return false;
     }
+    for(unsigned int i=2;i<_numWire;i++)
+    {
+        if(_wire[i].name().compare("d") == 0)
+            _wire[i].setType("CUT");
+        else if(_wire[i].name().compare("e") == 0)
+            _wire[i].setType("CUT");
+        else if(_wire[i].name().compare("g") == 0)
+            _wire[i].setType("CUT_BAR");
+    }
     // Module term
     bool firstTime = true;
     outVeriFile << "module top ( ";
-    for(unsigned i=0;i<_numWire;i++)
+    for(unsigned i=2;i<_numWire;i++)
     {
         if(_wire[i].type() == "PI" || _wire[i].type() == "PO")
         {
@@ -736,7 +745,7 @@ bool Circuit::writeVerilog(string fileName)
     // Inputs
     firstTime = true;
     outVeriFile << "input ";
-    for(unsigned i=0;i<_numWire;i++)
+    for(unsigned i=2;i<_numWire;i++)
     {
         if(_wire[i].type() == "PI")
         {
@@ -755,7 +764,7 @@ bool Circuit::writeVerilog(string fileName)
     // Outputs
     firstTime = true;
     outVeriFile << "output ";
-    for(unsigned i=0;i<_numWire;i++)
+    for(unsigned i=2;i<_numWire;i++)
     {
         if(_wire[i].type() == "PO")
         {
@@ -774,9 +783,11 @@ bool Circuit::writeVerilog(string fileName)
     // Wires
     firstTime = true;
     outVeriFile << "wire ";
-    for(unsigned i=0;i<_numWire;i++)
+    // _wire[0] and _wire[1] are 1'b0 and 1'b11
+    for(unsigned i=2;i<_numWire;i++)
     {
-        if(_wire[i].type() == "NORMAL")
+        if(_wire[i].type() == "CUT" || _wire[i].type() == "CUT_BAR" || 
+           _wire[i].type() == "NORMAL" || _wire[i].type() == "UNUSED")
         {
             if(firstTime == true)
             {
@@ -790,6 +801,27 @@ bool Circuit::writeVerilog(string fileName)
         }
     }
     outVeriFile << ";" << endl;
+    // Cut wires
+    firstTime = true;
+    outVeriFile << "wire ";
+    // _wire[0] and _wire[1] are 1'b0 and 1'b11
+    for(unsigned i=2;i<_numWire;i++)
+    {
+        if(_wire[i].type() == "CUT" || _wire[i].type() == "CUT_BAR")
+        {
+            if(firstTime == true)
+            {
+                outVeriFile << _wire[i].name() << _wire[i].name();
+                firstTime = false;
+            }
+            else
+            {
+                outVeriFile << ", " << _wire[i].name() << _wire[i].name();
+            }
+        }
+    }
+    outVeriFile << ";" << endl;
+
     // Gates
     for(unsigned i=0;i<_numGate;i++)
     {
@@ -797,9 +829,30 @@ bool Circuit::writeVerilog(string fileName)
         outVeriFile << _wire[_gate[i].outWire()].name();
         for(unsigned j=0;j<_gate[i].numInWire();j++)
         {
-            outVeriFile << ", " << _wire[_gate[i].inWire(j)].name();
+            if(_wire[_gate[i].inWire(j)].type() == "CUT" || _wire[_gate[i].inWire(j)].type() == "CUT_BAR")
+                outVeriFile << ", " << _wire[_gate[i].inWire(j)].name() << _wire[_gate[i].inWire(j)].name();
+            else
+                outVeriFile << ", " << _wire[_gate[i].inWire(j)].name();
         }
         outVeriFile << ");" << endl;
+    }
+    // Cut gates
+    // _wire[0] and _wire[1] are 1'b0 and 1'b1
+    int cutNum = 1;
+    for(unsigned i=2;i<_numWire;i++)
+    {
+        if(_wire[i].type() == "CUT")
+        {
+            outVeriFile << "_cut cut_" << cutNum << "_1 (" << _wire[i].name() << _wire[i].name() << "," 
+                        << _wire[i].name() << ");" << endl;
+            cutNum++;
+        }
+        else if(_wire[i].type() == "CUT_BAR")
+        {
+            outVeriFile << "_cut cut_" << cutNum << "_bar_1 (" << _wire[i].name() << _wire[i].name() << "," 
+                        << _wire[i].name() << ");" << endl;
+            cutNum++;
+        }
     }
 
     outVeriFile << endl;
