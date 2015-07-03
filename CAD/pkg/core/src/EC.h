@@ -32,7 +32,9 @@ public:
     void dfsorder(Circuit ckt, int GateId, vector<int> list) {
         for(unsigned i = 0; i < ckt.gate(GateId).numInWire(); ++i) {
             int inWire = ckt.gate(GateId).inWire(i);
-            if ( ckt.wire(inWire).type() != "PI")
+            if ( ckt.wire(inWire).type() != "PI" && ckt.wire(inWire).type() != "CUT"
+			  && ckt.wire(inWire).type() != "CUT_BAR" && 
+			  ckt.wire(inWire).type() != "TIE0" && ckt.wire(inWire).type() != "TIE1")
                 dfsorder(ckt, ckt.wire(inWire).preGate(), list);
         }
         list.push_back(GateId);
