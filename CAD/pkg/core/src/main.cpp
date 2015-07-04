@@ -37,13 +37,13 @@ int main(int argc, char *argv[])
     atpg.circuit(1).logicSim( patternSet );
 
     atpg.PossibleEqualSet();
-
-    int offset = atpg.circuit(0).numWire();
+    atpg.printPES();
 
     //Equivalence checking
     //check each equivalence set
 	Cut c;
     int count = 0;
+    int offset = atpg.circuit(0).numWire();
     map< int, vector<int> >::iterator it;
     for( it = atpg.PES.begin(); it != atpg.PES.end(); it++ )
     {
@@ -62,16 +62,20 @@ int main(int argc, char *argv[])
         for (unsigned i = 0; i < ckt1.size(); ++i){   
             EC* ec;
             for (unsigned j = 0; j < ckt2.size(); ++j){
+                //cout<<"Circuit1-wire"<<i<<" vs "<<"Ciruit2-wire"<<j<<endl;
                 ec = new EC();
        
                 ec->setCircuit(0, &atpg.circuit(0));
                 ec->setCircuit(1, &atpg.circuit(1));
-                
-                ec->cutpointAssign(0, ckt1[i]);
-                ec->cutpointAssign(1, ckt2[j]);
+               
+                //  cutpointAssign( circuit, cutpoint )
+                ec->cutpointAssign( 0, ckt1[i]);
+                ec->cutpointAssign( 1, ckt2[j]);
 
-                ec->dfsorder(ec->getCircuit(0), ec->getId(0), 0 );
-                ec->dfsorder(ec->getCircuit(1), ec->getId(1), 1 );
+                //  dfsorder( circuit   ,  cutpoint  ,  dfsorder )
+                ec->dfsorder( ec->getCircuit(0), ec->getId(0), 0 );
+                ec->dfsorder( ec->getCircuit(1), ec->getId(1), 1 );
+                //ec->printDFS();
                 
                 ec->getGateSat(ec->getCircuit(0), ec->getSat(), ec->getDfsorder(0) , 0);
                 ec->getGateSat(ec->getCircuit(1), ec->getSat(), ec->getDfsorder(1) , offset);
@@ -86,22 +90,18 @@ int main(int argc, char *argv[])
 
 		if (c.getCutSize() > 0 ) {
 			for (unsigned i = 0; i < c.getCutSize(); ++i) {
+                //cout<< c.getCut(i) <<endl;
 				atpg.circuit(0).wire(c.getCut(i)).setCutPoint();
-				atpg.circuit(0).wire(c.getCut(i)).setType("CUT");
 			}
 		}
 		else 
 			cout << "No EC cutpoints found!\n";
+        cout<<endl;
 
-        //cout<<"Value: "<< bitset<32>( it->first )<<" / "<< bitset<32>( ~it->first )<<'\t';
-        //for( unsigned j = 0; j < it->second.size(); ++j )
-         //   cout<< it->second[j] <<' ';
-        //cout<<endl;
     }
 
-
-    //atpg.circuit(0).dumpCircuit();
-    //atpg.circuit(1).dumpCircuit();
+    atpg.circuit(0).dumpCircuit();
+    atpg.circuit(1).dumpCircuit();
 
     ///// 2nd iteration   
 /*
