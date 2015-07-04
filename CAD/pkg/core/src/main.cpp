@@ -47,8 +47,8 @@ int main(int argc, char *argv[])
     map< int, vector<int> >::iterator it;
     for( it = atpg.PES.begin(); it != atpg.PES.end(); it++ )
     {
-		vector<int> ckt1;
-		vector<int> ckt2;
+		vector<int> ckt1; // wires for circuit 1
+		vector<int> ckt2; // wires for circuit 2
         cout << "Equivalence set "<< count <<" checking: ";
         cout << bitset<32>( it->first ) <<" / "<< bitset<32>( ~it->first )<< endl;
         ++count;
@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
                 
                 ec->getGateSat(ec->getCircuit(0), ec->getSat(), ec->getDfsorder(0) , 0);
                 ec->getGateSat(ec->getCircuit(1), ec->getSat(), ec->getDfsorder(1) , offset);
+                //ec->getSat()->writeCNF("CNF.txt");
                 
                 bool satResult = ec->solveSat(ec->miter(ec->getSat(),ec->getDfsorderPointer(),offset));
                 if(satResult == false) {
@@ -89,13 +90,13 @@ int main(int argc, char *argv[])
         }
 
 		if (c.getCutSize() > 0 ) {
+            //cout<<"CUT SIZE" << c.getCutSize()<<endl;
 			for (unsigned i = 0; i < c.getCutSize(); ++i) {
                 //cout<< c.getCut(i) <<endl;
-				atpg.circuit(0).wire(c.getCut(i)).setCutPoint();
+				atpg.circuit(0).wire(c.getCut(i)).setCutPoint(true);
+                atpg.circuit(1).wire(c.getCounter(i)).setCutPoint(true);
 			}
 		}
-		else 
-			cout << "No EC cutpoints found!\n";
         cout<<endl;
 
     }

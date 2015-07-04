@@ -21,7 +21,7 @@ public:
     void addPosGate(int gateId){ _posGateId.push_back(gateId); };
     void resetPosGate(){ _posGateId.clear(); };
     void setPossibility(double onePossibility){ _onePossibility = onePossibility; };
-    void setCutPoint() { _isCutPoint = !_isCutPoint; }
+    void setCutPoint(bool isCutPoint ) { _isCutPoint = isCutPoint; }
 
     /*** get ***/
     string name(){ return _name; };

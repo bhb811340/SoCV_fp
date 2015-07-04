@@ -667,8 +667,8 @@ void Circuit::dumpCircuit()
     }
 
     cout<<endl;
-    cout<<"  WireID\tWire Name\tType    \tValue"<<endl;
-    cout<<"==================================================================================="<<endl;
+    cout<<"  WireID\tWire Name\tType    \tValue                             \tCutPoint"<<endl;
+    cout<<"=============================================================================================="<<endl;
     for( unsigned j = 0; j< numWire(); ++j )
     {
         Wire w = wire( j );
@@ -677,6 +677,8 @@ void Circuit::dumpCircuit()
         cout<< setiosflags(ios::left) << setw(8) << w.type() <<'\t';
         if( w.type() != "UNUSED" )
             cout<< bitset<32>( w.valueSet() )<<'\t';
+        else
+            cout<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"<<'\t';
         cout<< w.isCutPoint() <<'\t';
         cout<<endl;
     }
