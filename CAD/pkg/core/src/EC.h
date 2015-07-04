@@ -38,7 +38,7 @@ public:
 	void getGateSat(Circuit* ckt, Sat s, vector<int> dfsorder, int offset);
 	Sat miter(Sat& s, vector<int>* dfs, int offset);
 	bool solveSat(Sat s);
-    void dfsorder(Circuit* ckt, int WireId, vector<int> list) {
+    void dfsorder(Circuit* ckt, int WireId, int list ) {
         //cout<< ckt->wire(WireId).name() <<endl;
 		Gate g = ckt->gate(ckt->wire(WireId).preGate());
         for(unsigned i = 0; i < g.numInWire(); ++i) {
@@ -48,7 +48,7 @@ public:
 			  ckt->wire(inWire).type() != "TIE0" && ckt->wire(inWire).type() != "TIE1")
                 dfsorder(ckt, inWire, list);
         }
-        list.push_back(WireId);
+        _dfsorder[list].push_back(WireId);
     }
 	/***cut***/
     void checkPES();

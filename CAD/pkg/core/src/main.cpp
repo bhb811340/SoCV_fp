@@ -54,30 +54,32 @@ int main(int argc, char *argv[])
 			else
 				ckt2.push_back(it->second[i] - offset);
 		}
-        for (unsigned i = 0; i < ckt1.size(); ++i){   
-            for (unsigned j = 0; j < ckt2.size(); ++j){
-                EC ec;
-             
-                ec.setCircuit(0, &atpg.circuit(0));
-                ec.setCircuit(1, &atpg.circuit(1));
-                
-                ec.cutpointAssign(0, ckt1[i]);
-                ec.cutpointAssign(1, ckt2[j]);
 
-                ec.dfsorder(ec.getCircuit(0), ec.getId(0),ec.getDfsorder(0));
-                ec.dfsorder(ec.getCircuit(1), ec.getId(1),ec.getDfsorder(1));
+        for (unsigned i = 0; i < ckt1.size(); ++i){   
+            EC* ec;
+            for (unsigned j = 0; j < ckt2.size(); ++j){
+                ec = new EC();
+       
+                ec->setCircuit(0, &atpg.circuit(0));
+                ec->setCircuit(1, &atpg.circuit(1));
                 
-                ec.getGateSat(ec.getCircuit(0), ec.getSat(),ec.getDfsorder(0) , 0);
-                ec.getGateSat(ec.getCircuit(1), ec.getSat(),ec.getDfsorder(1) , offset);
+                ec->cutpointAssign(0, ckt1[i]);
+                ec->cutpointAssign(1, ckt2[j]);
+
+                ec->dfsorder(ec->getCircuit(0), ec->getId(0), 0 );
+                ec->dfsorder(ec->getCircuit(1), ec->getId(1), 1 );
                 
-                bool satResult = ec.solveSat(ec.miter(ec.getSat(),ec.getDfsorderPointer(),offset));
+                ec->getGateSat(ec->getCircuit(0), ec->getSat(), ec->getDfsorder(0) , 0);
+                ec->getGateSat(ec->getCircuit(1), ec->getSat(), ec->getDfsorder(1) , offset);
+                
+                bool satResult = ec->solveSat(ec->miter(ec->getSat(),ec->getDfsorderPointer(),offset));
                 if(satResult == false) {
 					c.pushCut(ckt1[i]);
 					c.pushCounter(ckt2[j]);
 				}
-
             }
         }
+
 		if (c.getCutSize() > 0 ) {
 			for (unsigned i = 0; i < c.getCutSize(); ++i) {
 				atpg.circuit(0).wire(c.getCut(i)).setCutPoint();

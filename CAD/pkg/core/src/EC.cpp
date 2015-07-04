@@ -367,7 +367,7 @@ void EC::getGateSat(Circuit* ckt, Sat s, vector<int> dfsorder, int offset){
 }
 
 Sat EC::miter(Sat& s, vector<int>* dfs, int offset) {
-	
+
 	int out1 = dfs[0].back();
 	int out2 = dfs[1].back() + offset;
 	int miterVar = s.numVariable() + 1;
@@ -396,7 +396,6 @@ Sat EC::miter(Sat& s, vector<int>* dfs, int offset) {
 	clause.addVariable(miterVar);
 	s.addClause(clause);
 	clause.resetVariable();
-
 	return s;
 }
 
@@ -407,11 +406,11 @@ bool EC::solveSat(Sat s) {
 	system(systemCmd.c_str());
     string resultFileName = "EC_cutpoint.cnf.result";
     if(s.readSATResult(resultFileName.c_str())){
-        cout << "SATISFIABLE\n";
+        cout << "SATISFIABLE\n\n";
         return true;
     }
     else {
-        cout << "UNSATISFIABLE\n";
+        cout << "UNSATISFIABLE\n\n";
         return false;
     }
         
