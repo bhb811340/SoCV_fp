@@ -1,6 +1,7 @@
 #include <iostream>
 #include <time.h>
 #include <stdlib.h>
+#include <bitset>
 
 #include "atpg.h"
 #include "pattern.h"
@@ -42,12 +43,15 @@ int main(int argc, char *argv[])
     //Equivalence checking
     //check each equivalence set
 	Cut c;
+    int count = 0;
     map< int, vector<int> >::iterator it;
     for( it = atpg.PES.begin(); it != atpg.PES.end(); it++ )
     {
 		vector<int> ckt1;
 		vector<int> ckt2;
-        cout << "Equivalence set "<< it->first <<" checking"<<endl;
+        cout << "Equivalence set "<< count <<" checking: ";
+        cout << bitset<32>( it->first ) <<" / "<< bitset<32>( ~it->first )<< endl;
+        ++count;
 		for (unsigned i = 0; i < it->second.size(); ++i) {
 			if(it->second[i] < offset)
 				ckt1.push_back(it->second[i]);
