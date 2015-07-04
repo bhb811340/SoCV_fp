@@ -93,8 +93,8 @@ int main(int argc, char *argv[])
             //cout<<"CUT SIZE" << c.getCutSize()<<endl;
 			for (unsigned i = 0; i < c.getCutSize(); ++i) {
                 //cout<< c.getCut(i) <<endl;
-				atpg.circuit(0).wire(c.getCut(i)).setCutPoint(true);
-                atpg.circuit(1).wire(c.getCounter(i)).setCutPoint(true);
+				atpg.circuit(0).wire(c.getCut(i)).setType("CUT");
+                atpg.circuit(1).wire(c.getCounter(i)).setType("CUT");
 			}
 		}
         cout<<endl;
@@ -107,8 +107,6 @@ int main(int argc, char *argv[])
     ///// 2nd iteration   
 /*
     cout<<endl<<endl;
-    atpg.circuit(0).wire(8).setCutPoint();
-    atpg.circuit(1).wire(8).setCutPoint();
 
     Pattern* patternSet0 = atpg.RandomGenPattern();
 	atpg.circuit(0).logicSim( patternSet0 );

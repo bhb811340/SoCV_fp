@@ -578,7 +578,7 @@ void Circuit::AssignPiValue( Pattern* PatternSet )
             value[ i ] = ~0;
             wire(i).setValueSet( ~0 );
         }
-        else if ( pWire.isCutPoint() ) // assign value to cut points
+        else if ( pWire.type() == "CUT" || pWire.type() == "CUT_BAR" ) // assign value to cut points
         {
             value[ i ] = PatternSet->value[j];
             wire(i).setValueSet( PatternSet->value[j] );
@@ -642,7 +642,7 @@ void Circuit::logicSim( Pattern* PatternSet )
         ///cout<< finalValue<<endl;
 
         Wire fanoutWire = wire( targetGate.outWire() );
-		if( ! fanoutWire.isCutPoint()  )
+		if( fanoutWire.type() != "CUT" && fanoutWire.type() != "CUT_BAR"  )
         {
             wire( targetGate.outWire() ).setValueSet( finalValue );
             value[ targetGate.outWire() ] = finalValue;
@@ -667,8 +667,8 @@ void Circuit::dumpCircuit()
     }
 
     cout<<endl;
-    cout<<"  WireID\tWire Name\tType    \tValue                             \tCutPoint"<<endl;
-    cout<<"=============================================================================================="<<endl;
+    cout<<"  WireID\tWire Name\tType    \tValue"<<endl;
+    cout<<"======================================================================================="<<endl;
     for( unsigned j = 0; j< numWire(); ++j )
     {
         Wire w = wire( j );
@@ -679,7 +679,6 @@ void Circuit::dumpCircuit()
             cout<< bitset<32>( w.valueSet() )<<'\t';
         else
             cout<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"<<'\t';
-        cout<< w.isCutPoint() <<'\t';
         cout<<endl;
     }
 }

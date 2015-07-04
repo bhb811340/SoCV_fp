@@ -44,9 +44,8 @@ public:
         for(unsigned i = 0; i < g.numInWire(); ++i) {
             int inWire = g.inWire(i);
             if ( ckt->wire(inWire).type() != "PI" 
-                && ckt->wire(inWire).type() != "TIE0" 
-                && ckt->wire(inWire).type() != "TIE1"
-                && !ckt->wire(inWire).isCutPoint()  )
+                && ckt->wire(inWire).type() != "TIE0" && ckt->wire(inWire).type() != "TIE1"
+                && ckt->wire(inWire).type() != "CUT" && ckt->wire(inWire).type() != "CUT_BAR"  )
                 dfsorder(ckt, inWire, list);
         }
         _dfsorder[list].push_back(WireId);

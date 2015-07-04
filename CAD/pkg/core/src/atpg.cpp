@@ -41,7 +41,7 @@ Pattern* Atpg::RandomGenPattern()
         Wire pWire = circuit(0).wire(i);
         if( pWire.type() == "PI" )
             pattern->value.push_back( rand() );
-        else if ( pWire.isCutPoint() )
+        else if ( pWire.type() == "CUT" || pWire.type() == "CUT_BAR" )
             pattern->value.push_back( rand() );
     }
     _pattern.push_back( pattern );
@@ -61,7 +61,7 @@ void Atpg::PossibleEqualSet()
             continue;
         if( w.type() == "PI" )
             continue;
-        if( w.isCutPoint() )
+        if( w.type() == "CUT" || w.type() == "CUT_BAR" )
             continue;
 
         // inverse equivalence
@@ -85,7 +85,7 @@ void Atpg::PossibleEqualSet()
             continue;
         if( w.type() == "PI" )
             continue;
-        if( w.isCutPoint() )
+        if( w.type() == "CUT" || w.type() == "CUT_BAR" )
             continue;
         
         // inverse equivalence
