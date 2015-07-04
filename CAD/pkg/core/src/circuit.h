@@ -18,7 +18,7 @@ public:
 
     /*** construct ***/
     bool readVerilog(string fileName);
-    bool writeVerilog(string fileName);
+    bool writeVerilog(string fileName, unsigned);
 
     /*** HCY add for logic simulation ***/
 	bool setLevel();

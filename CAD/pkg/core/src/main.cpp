@@ -93,8 +93,13 @@ int main(int argc, char *argv[])
             //cout<<"CUT SIZE" << c.getCutSize()<<endl;
 			for (unsigned i = 0; i < c.getCutSize(); ++i) {
                 //cout<< c.getCut(i) <<endl;
-				atpg.circuit(0).wire(c.getCut(i)).setType("CUT");
-                atpg.circuit(1).wire(c.getCounter(i)).setType("CUT");
+                //if not PO and PI modify to CUT
+				if(atpg.circuit(0).wire(c.getCut(i)).type().compare("PO") &&
+				   atpg.circuit(0).wire(c.getCut(i)).type().compare("PI"))
+				    atpg.circuit(0).wire(c.getCut(i)).setType("CUT");
+                if(atpg.circuit(1).wire(c.getCounter(i)).type().compare("PO") &&
+                   atpg.circuit(1).wire(c.getCounter(i)).type().compare("PI"))
+                    atpg.circuit(1).wire(c.getCounter(i)).setType("CUT");
 			}
 		}
         cout<<endl;
@@ -118,8 +123,8 @@ int main(int argc, char *argv[])
     //atpg.circuit(1).dumpCircuit();
 */
      
-    atpg.circuit(0).writeVerilog(argv[3]);
-    atpg.circuit(1).writeVerilog(argv[4]);
+    atpg.circuit(0).writeVerilog(argv[3], c.getCutSize());
+    atpg.circuit(1).writeVerilog(argv[4], c.getCounterSize());
     //string cmd = "rm *.cnf *.result *.tmp";
     //system(cmd.c_str());
 

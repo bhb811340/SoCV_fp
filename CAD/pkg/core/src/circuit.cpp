@@ -708,7 +708,7 @@ void Circuit::addGate(unsigned gateId, string gateName, string gateType){
     _gate[gateId].setType(gateType);
 }
 
-bool Circuit::writeVerilog(string fileName)
+bool Circuit::writeVerilog(string fileName, unsigned cutSize)
 {
     ofstream outVeriFile(fileName.c_str(), ios::binary);
     if(!outVeriFile.is_open()){
@@ -806,26 +806,28 @@ bool Circuit::writeVerilog(string fileName)
     }
     outVeriFile << ";" << endl;
     // Cut wires
-    firstTime = true;
-    outVeriFile << "wire ";
-    // _wire[0] and _wire[1] are 1'b0 and 1'b11
-    for(unsigned i=2;i<_numWire;i++)
+    if(cutSize != 0)
     {
-        if(_wire[i].type() == "CUT" || _wire[i].type() == "CUT_BAR")
+        firstTime = true;
+        outVeriFile << "wire ";
+        // _wire[0] and _wire[1] are 1'b0 and 1'b11
+        for(unsigned i=2;i<_numWire;i++)
         {
-            if(firstTime == true)
+            if(_wire[i].type() == "CUT" || _wire[i].type() == "CUT_BAR")
             {
-                outVeriFile << _wire[i].name() << _wire[i].name();
-                firstTime = false;
-            }
-            else
-            {
-                outVeriFile << ", " << _wire[i].name() << _wire[i].name();
+                if(firstTime == true)
+                {
+                    outVeriFile << _wire[i].name() << _wire[i].name();
+                    firstTime = false;
+                }
+                else
+                {
+                    outVeriFile << ", " << _wire[i].name() << _wire[i].name();
+                }
             }
         }
+        outVeriFile << ";" << endl;
     }
-    outVeriFile << ";" << endl;
-
     // Gates
     for(unsigned i=0;i<_numGate;i++)
     {
